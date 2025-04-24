@@ -142,8 +142,8 @@ class _StarterPageState extends State<StarterPage> {
                         curve: Curves.easeIn,
                       );
                     } else {
-                      // Navigate to home or login page
-                      Navigator.pushReplacementNamed(context, '/home');
+                  
+                      Navigator.pushReplacementNamed(context, '/login');
                     }
                   },
                   child: Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tech_mart/views/Starter.dart';
+import 'package:tech_mart/presentation/auth/Starter.dart';
+import 'package:tech_mart/presentation/auth/Login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => const StarterPage(),
-       
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const Placeholder(), //  HomePage 
+        '/register': (context) => const Placeholder(), // RegisterPage 
+        
       },
       initialRoute: '/',
     );
