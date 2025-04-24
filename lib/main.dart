@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/presentation/auth/Starter.dart';
 import 'package:tech_mart/presentation/auth/Login.dart';
+import 'package:tech_mart/presentation/home/HomePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           case '/login':
             return _createRoute(const LoginPage(), settings);
           case '/home':
-            return _createRoute(const Placeholder(), settings);
+            return _createRoute(const HomePage(), settings);
           case '/register':
             return _createRoute(const Placeholder(), settings);
           default:
@@ -82,10 +83,10 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
     const begin = Offset(1.0, 0.0);
     const end = Offset.zero;
     const curve = Curves.easeInOutCubic;
-
+    
     var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
     var offsetAnimation = animation.drive(tween);
-
+    
     return SlideTransition(
       position: offsetAnimation,
       child: FadeTransition(
