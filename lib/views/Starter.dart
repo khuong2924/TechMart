@@ -37,14 +37,9 @@ class _StarterPageState extends State<StarterPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Container(
-        decoration: BoxDecoration(
-          // Background pattern similar to the image
+        decoration: const BoxDecoration(
           color: Colors.black,
-          image: DecorationImage(
-            image: AssetImage('assets/images/pattern_background.png'),
-            fit: BoxFit.cover,
-            opacity: 0.2,
-          ),
+          // Remove the DecorationImage for now
         ),
         child: SafeArea(
           child: Column(
@@ -56,14 +51,14 @@ class _StarterPageState extends State<StarterPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/logo.png',
-                        width: 60,
+                      const Icon(
+                        Icons.recycling, 
+                        size: 60,
                         color: Colors.white,
                       ),
                       const SizedBox(width: 10),
                       const Text(
-                        'Leuze',
+                        'Tech Mart',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 42,
