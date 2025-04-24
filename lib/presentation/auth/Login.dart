@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                         // Handle login
                         if (_emailController.text.isNotEmpty && 
                             _passwordController.text.isNotEmpty) {
-                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.of(context).pushReplacementNamed('/home');
                         }
                       },
                       child: Container(
@@ -203,8 +203,8 @@ class _LoginPageState extends State<LoginPage> {
                     // Create Account Button
                     InkWell(
                       onTap: () {
-                        // Navigate to register page
-                        Navigator.pushNamed(context, '/register');
+                        // Navigate to register page with animation
+                        Navigator.of(context).pushNamed('/register');
                       },
                       child: Container(
                         width: double.infinity,
