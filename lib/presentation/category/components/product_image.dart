@@ -10,43 +10,7 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildProductImage(categoryName);
-  }
-
-  Widget _buildProductImage(String category) {
-    // Use different placeholder based on category
-    String assetPath;
-    
-    switch (category.toLowerCase()) {
-      case 'laptops':
-        assetPath = 'assets/images/laptop_placeholder.png';
-        break;
-      case 'smartphones':
-        assetPath = 'assets/images/smartphone_placeholder.png';
-        break;
-      case 'accessories':
-        assetPath = 'assets/images/accessories_placeholder.png';
-        break;
-      case 'audio':
-        assetPath = 'assets/images/audio_placeholder.png';
-        break;
-      default:
-        assetPath = 'assets/images/placeholder.png';
-    }
-
-    // Try to load from assets, but have a fallback if the asset doesn't exist
-    try {
-      return Image.asset(
-        assetPath,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
-          // Fallback to a simple placeholder with icon
-          return _buildIconPlaceholder(category);
-        },
-      );
-    } catch (e) {
-      return _buildIconPlaceholder(category);
-    }
+    return _buildIconPlaceholder(categoryName);
   }
 
   Widget _buildIconPlaceholder(String category) {
