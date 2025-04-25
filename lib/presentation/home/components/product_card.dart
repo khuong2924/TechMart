@@ -66,12 +66,7 @@ class ProductCard extends StatelessWidget {
               child: Container(
                 height: 103,
                 margin: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(imageUrl),
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                child: _buildProductImage(),
               ),
             ),
             
@@ -148,5 +143,52 @@ class ProductCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildProductImage() {
+    // First try to use a default asset placeholder
+    try {
+      return Image.asset(
+        'assets/images/placeholder.png',
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          // Fall back to a simple placeholder with icon
+          return Container(
+            color: Colors.grey[200],
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.devices_other, color: Colors.grey[500], size: 30),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Product",
+                    style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      // Fall back to icon if asset loading fails for any reason
+      return Container(
+        color: Colors.grey[200],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.devices_other, color: Colors.grey[500], size: 30),
+              const SizedBox(height: 4),
+              Text(
+                "Product",
+                style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
