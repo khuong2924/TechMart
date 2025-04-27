@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
 
 class Product {
   final String id;
@@ -333,172 +334,74 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   }
 
   Widget _buildProductCard(Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product image with "Out of Stock" overlay if needed
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: Container(
-                    color: Colors.grey.shade100,
-                    child: Center(
-                      child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
-                    ),
-                  ),
-                ),
-              ),
-              if (!product.isAvailable)
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'OUT OF STOCK',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
+    return InkWell(
+      onTap: () => _navigateToProductDetail(product),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product image with "Out of Stock" overlay if needed
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      color: Colors.grey.shade100,
+                      child: Center(
+                        child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
                       ),
                     ),
                   ),
                 ),
-            ],
-          ),
-
-          // Product details
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Icons.star, size: 16, color: Colors.amber.shade700),
-                    const SizedBox(width: 2),
-                    Text(product.rating.toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                    const SizedBox(width: 4),
-                    Text(
-                      '(${product.reviews})',
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                if (!product.isAvailable)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'OUT OF STOCK',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '₹${product.price.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
                   ),
-                ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildProductListItem(Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product image
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-                child: SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: Container(
-                    color: Colors.grey.shade100,
-                    child: Center(
-                      child: Icon(Icons.photo, size: 40, color: Colors.grey.shade400),
-                    ),
-                  ),
-                ),
-              ),
-              if (!product.isAvailable)
-                Positioned.fill(
-                  child: Container(
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'OUT OF STOCK',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-
-          // Product details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
+            // Product details
+            Padding(
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Icon(Icons.star, size: 16, color: Colors.amber.shade700),
@@ -511,30 +414,136 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
                     '₹${product.price.toStringAsFixed(0)}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  if (product.colors.isNotEmpty)
-                    Text(
-                      'Colors: ${product.colors.join(", ")}',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 12,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductListItem(Product product) {
+    return InkWell(
+      onTap: () => _navigateToProductDetail(product),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product image
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                  child: SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: Container(
+                      color: Colors.grey.shade100,
+                      child: Center(
+                        child: Icon(Icons.photo, size: 40, color: Colors.grey.shade400),
+                      ),
+                    ),
+                  ),
+                ),
+                if (!product.isAvailable)
+                  Positioned.fill(
+                    child: Container(
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'OUT OF STOCK',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+
+            // Product details
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 16, color: Colors.amber.shade700),
+                        const SizedBox(width: 2),
+                        Text(product.rating.toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${product.reviews})',
+                          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '₹${product.price.toStringAsFixed(0)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (product.colors.isNotEmpty)
+                      Text(
+                        'Colors: ${product.colors.join(", ")}',
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 12,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -563,6 +572,30 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _navigateToProductDetail(Product product) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          price: product.price,
+          rating: product.rating,
+          reviews: product.reviews,
+          colors: product.colors,
+          specifications: {
+            "Processor": "Intel Core i9 9th Gen",
+            "Memory": "16 GB",
+            "Storage": "1 TB SSD",
+            "OS": "Mac OS Catalina",
+            "Graphics": "4 GB Graphics"
+          },
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'components/search_bar.dart';
 import 'components/product_card.dart';
 import 'components/section_header.dart';
 import 'package:tech_mart/presentation/category/CategoryDetailsPage.dart';
+import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -80,16 +81,41 @@ class HomePage extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
                     childAspectRatio: 0.7,
-                    children: const [
-                      ProductCard(
-                        rating: '4.6',
-                        title: 'Apple MacBook Pro \nCore i9 9th Gen - ',
-                        price: '₹2,24,900',
-                        originalPrice: '₹2,39,900',
-                        discount: '6% off',
-                        imageUrl: 'https://via.placeholder.com/163x103',
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailPage(
+                                id: 'macbook-pro',
+                                name: 'Apple MacBook Pro Core i9 9th Gen - (16 GB/1 TB SSD/Mac OS Catalina/4 GB Graphics)',
+                                image: 'assets/images/macbook16.jpg',
+                                price: 199900,
+                                rating: 4.7,
+                                reviews: 90,
+                                colors: ['Space Gray', 'Silver'],
+                                specifications: {
+                                  "Processor": "Intel Core i9 9th Gen",
+                                  "Memory": "16 GB",
+                                  "Storage": "1 TB SSD",
+                                  "OS": "Mac OS Catalina",
+                                  "Graphics": "4 GB Graphics"
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        child: const ProductCard(
+                          rating: '4.7',
+                          title: 'Apple MacBook Pro \nCore i9 9th Gen - ',
+                          price: '₹1,99,900',
+                          originalPrice: '₹2,39,900',
+                          discount: '6% off',
+                          imageUrl: 'https://via.placeholder.com/163x103',
+                        ),
                       ),
-                      ProductCard(
+                      const ProductCard(
                         rating: '4.6',
                         title: 'JBL T450BT Extra Bass \nBluetooth Headset',
                         price: '2,799',
@@ -97,7 +123,7 @@ class HomePage extends StatelessWidget {
                         discount: '20% off',
                         imageUrl: 'https://placehold.co/163x103',
                       ),
-                      ProductCard(
+                      const ProductCard(
                         rating: '4.6',
                         title: 'Canon EOS 90D DSLR\nCamera Body with...',
                         price: '1,13,990',
