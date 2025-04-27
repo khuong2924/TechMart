@@ -1,143 +1,219 @@
 import 'package:flutter/material.dart';
+import 'package:tech_mart/models/product.dart';
+import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
 
 class ProductCard extends StatelessWidget {
-  final String rating;
-  final String title;
-  final String price;
-  final String originalPrice;
-  final String discount;
-  final String imageUrl;
+  final Product product;
+  final bool showFavoriteButton;
+  final bool showPromotionTags;
 
   const ProductCard({
     Key? key,
-    required this.rating,
-    required this.title,
-    required this.price,
-    required this.originalPrice,
-    required this.discount,
-    required this.imageUrl,
+    required this.product,
+    this.showFavoriteButton = true,
+    this.showPromotionTags = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0xFFF0F0F0),
-            blurRadius: 0,
-            offset: Offset(0, 1.50),
-          ),
-          BoxShadow(
-            color: Color(0xFFF0F0F0),
-            blurRadius: 0,
-            offset: Offset(-1.50, 0),
-          )
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
+    final discountPercent = product.discountPercentValue;
+
+    return GestureDetector(
+      onTap: () => _navigateToDetail(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Rating badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: ShapeDecoration(
-                color: const Color(0xFF191919),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+            // Image and discount badge
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      color: Colors.white,
+                      child: Image.asset(
+                        product.image,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(child: Icon(Icons.image, size: 50, color: Colors.grey.shade300));
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                rating,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+                if (discountPercent != null)
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        '-$discountPercent%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (showFavoriteButton)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.favorite_border,
+                        size: 18,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            
-            // Product image
-            Center(
-              child: Container(
-                height: 103,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                child: _buildProductImage(),
-              ),
-            ),
-            
-            // Title
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 15,
-                fontFamily: 'Lato',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            
-            const SizedBox(height: 8),
-            
-            // Price section
-            RichText(
-              text: TextSpan(
+
+            // Product details
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextSpan(
-                    text: price,
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star,
+                        size: 14,
+                        color: Colors.amber.shade800,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${product.rating}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '(${product.reviews})',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    product.formattedPrice,
+                    style: TextStyle(
                       fontSize: 15,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red.shade700,
                     ),
                   ),
-                  const TextSpan(text: ' '),
-                  TextSpan(
-                    text: originalPrice,
-                    style: const TextStyle(
-                      color: Color(0xFF757575),
-                      fontSize: 12,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w400,
-                      decoration: TextDecoration.lineThrough,
+                  const SizedBox(height: 2),
+                  if (product.originalPrice != null)
+                    Row(
+                      children: [
+                        Text(
+                          product.formattedOriginalPrice!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '-${product.discountPercentValue}%',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const TextSpan(text: ' '),
-                  TextSpan(
-                    text: discount,
-                    style: const TextStyle(
-                      color: Color(0xFF26A541),
-                      fontSize: 12,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w800,
+                  if (showPromotionTags)
+                    const SizedBox(height: 6),
+                  if (showPromotionTags)
+                    Row(
+                      children: [
+                        if (product.isFreeShipping)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(3),
+                              border: Border.all(color: Colors.blue.shade100),
+                            ),
+                            child: Text(
+                              'Free Shipping',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(color: Colors.orange.shade100),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.card_giftcard, size: 10, color: Colors.orange.shade700),
+                              const SizedBox(width: 2),
+                              Text(
+                                'Quà',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.orange.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
                 ],
               ),
-            ),
-            
-            const SizedBox(height: 8),
-            
-            // Exchange offer
-            Row(
-              children: const [
-                Icon(Icons.local_offer_outlined, size: 10, color: Colors.grey),
-                SizedBox(width: 4),
-                Text(
-                  'Exchange Offer & more',
-                  style: TextStyle(
-                    color: Color(0xFF191919),
-                    fontSize: 10,
-                    fontFamily: 'Lato',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
             ),
           ],
         ),
@@ -145,50 +221,24 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage() {
-    // First try to use a default asset placeholder
-    try {
-      return Image.asset(
-        'assets/images/placeholder.png',
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
-          // Fall back to a simple placeholder with icon
-          return Container(
-            color: Colors.grey[200],
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.devices_other, color: Colors.grey[500], size: 30),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Product",
-                    style: TextStyle(fontSize: 10, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      // Fall back to icon if asset loading fails for any reason
-      return Container(
-        color: Colors.grey[200],
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.devices_other, color: Colors.grey[500], size: 30),
-              const SizedBox(height: 4),
-              Text(
-                "Product",
-                style: TextStyle(fontSize: 10, color: Colors.grey[600]),
-              ),
-            ],
-          ),
+  void _navigateToDetail(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailPage(
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          price: product.price.toDouble(),
+          rating: product.rating,
+          reviews: product.reviews,
+          colors: product.colors,
+          specifications: product.specifications,
+          discountPrice: product.originalPrice?.toDouble(),
+          discountPercent: product.discountPercent,
+          isFreeShipping: product.isFreeShipping,
         ),
-      );
-    }
+      ),
+    );
   }
 }

@@ -1,30 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tech_mart/models/product.dart';
 import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
 import 'package:intl/intl.dart';
-
-class Product {
-  final String id;
-  final String name;
-  final String image;
-  final int price; // Giá bằng VND
-  final double rating;
-  final int reviews;
-  final bool isAvailable;
-  final List<String> colors;
-  final Map<String, String> specifications;
-
-  Product({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.rating,
-    required this.reviews,
-    required this.isAvailable,
-    required this.colors,
-    required this.specifications,
-  });
-}
 
 class CategoryDetailsPage extends StatefulWidget {
   final String categoryName;
@@ -47,32 +24,39 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
     'Điện thoại': [
       Product(
         id: 's1',
-        name: 'iPhone 15 Pro',
+        name: 'iPhone 15 Pro Max 256GB',
         image: 'assets/images/iphone15pro.jpg',
-        price: 29970000, // Chuyển đổi từ INR sang VND (xấp xỉ)
+        price: 29990000,
+        originalPrice: 34990000,
+        discountPercent: '14%',
         rating: 4.8,
         reviews: 324,
         isAvailable: true,
-        colors: ['Đen Titan', 'Bạc', 'Titan Tự nhiên', 'Titan Xanh'],
+        colors: ['Titan Đen', 'Titan Tự nhiên', 'Titan Xanh', 'Titan Trắng'],
+        isHot: true,
         specifications: {
-          "Màn hình": "6.1 inch, OLED, Super Retina XDR",
+          "Màn hình": "6.7 inch, OLED, Super Retina XDR",
           "Chip": "A17 Pro",
           "RAM": "8 GB",
-          "Bộ nhớ trong": "128 GB",
+          "Bộ nhớ trong": "256 GB",
           "Camera sau": "48MP + 12MP + 12MP",
           "Camera trước": "12MP",
-          "Pin": "3274 mAh"
+          "Pin": "4422 mAh, sạc nhanh 27W"
         },
       ),
       Product(
         id: 's2',
-        name: 'Samsung Galaxy S24 Ultra',
+        name: 'Samsung Galaxy S24 Ultra 256GB',
         image: 'assets/images/s24ultra.jpg',
-        price: 32500000,
+        price: 27990000,
+        originalPrice: 31990000,
+        discountPercent: '12%',
         rating: 4.7,
         reviews: 289,
         isAvailable: true,
         colors: ['Đen Titan', 'Xám Titan', 'Tím Titan'],
+        isHot: true,
+        isNew: true,
         specifications: {
           "Màn hình": "6.8 inch, Dynamic AMOLED 2X",
           "Chip": "Snapdragon 8 Gen 3",
@@ -80,216 +64,31 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           "Bộ nhớ trong": "256 GB",
           "Camera sau": "200MP + 12MP + 50MP + 10MP",
           "Camera trước": "12MP",
-          "Pin": "5000 mAh"
-        },
-      ),
-      Product(
-        id: 's3',
-        name: 'Google Pixel 8 Pro',
-        image: 'assets/images/pixel8pro.jpg',
-        price: 25000000,
-        rating: 4.6,
-        reviews: 178,
-        isAvailable: true,
-        colors: ['Đen Obsidian', 'Trắng Sứ', 'Xanh Bay'],
-        specifications: {
-          "Màn hình": "6.7 inch, LTPO OLED",
-          "Chip": "Google Tensor G3",
-          "RAM": "12 GB",
-          "Bộ nhớ trong": "128 GB",
-          "Camera sau": "50MP + 48MP + 48MP",
-          "Camera trước": "10.5MP",
-          "Pin": "5050 mAh"
-        },
-      ),
-      Product(
-        id: 's4',
-        name: 'OnePlus 12',
-        image: 'assets/images/oneplus12.jpg',
-        price: 16250000,
-        rating: 4.5,
-        reviews: 256,
-        isAvailable: true,
-        colors: ['Đen Lụa', 'Xanh Bất Tận'],
-        specifications: {
-          "Màn hình": "6.82 inch, LTPO AMOLED",
-          "Chip": "Snapdragon 8 Gen 3",
-          "RAM": "12 GB",
-          "Bộ nhớ trong": "256 GB",
-          "Camera sau": "50MP + 48MP + 64MP",
-          "Camera trước": "32MP",
-          "Pin": "5400 mAh"
+          "Pin": "5000 mAh, sạc nhanh 45W"
         },
       ),
     ],
     'Laptop': [
       Product(
         id: 'l1',
-        name: 'MacBook Pro 16"',
+        name: 'MacBook Pro M3 Max 16 inch 36GB/1TB',
         image: 'assets/images/macbook16.jpg',
-        price: 62500000,
+        price: 79990000,
+        originalPrice: 84990000,
+        discountPercent: '6%',
         rating: 4.9,
         reviews: 167,
         isAvailable: true,
-        colors: ['Xám Không Gian', 'Bạc'],
+        colors: ['Xám không gian', 'Bạc'],
+        isHot: true,
         specifications: {
-          "Bộ xử lý": "Apple M3 Pro",
-          "RAM": "32 GB",
+          "CPU": "Apple M3 Max 16-core",
+          "RAM": "36 GB",
           "Ổ cứng": "1 TB SSD",
           "Màn hình": "16 inch, Liquid Retina XDR",
-          "Đồ họa": "M3 Pro 19-core GPU",
+          "Card đồ họa": "M3 Max 40-core GPU",
+          "Cổng kết nối": "3 x Thunderbolt 4, HDMI, SDXC, MagSafe 3",
           "Hệ điều hành": "macOS Sonoma"
-        },
-      ),
-      Product(
-        id: 'l2',
-        name: 'Dell XPS 15',
-        image: 'assets/images/xps15.jpg',
-        price: 45000000,
-        rating: 4.7,
-        reviews: 142,
-        isAvailable: true,
-        colors: ['Bạc Platinum'],
-        specifications: {
-          "Bộ xử lý": "Intel Core i9-13900H",
-          "RAM": "32 GB",
-          "Ổ cứng": "1 TB SSD",
-          "Màn hình": "15.6 inch, OLED 3.5K",
-          "Đồ họa": "NVIDIA GeForce RTX 4070",
-          "Hệ điều hành": "Windows 11 Pro"
-        },
-      ),
-      Product(
-        id: 'l3',
-        name: 'Lenovo ThinkPad X1 Carbon',
-        image: 'assets/images/thinkpadx1.jpg',
-        price: 40000000,
-        rating: 4.6,
-        reviews: 98,
-        isAvailable: false,
-        colors: ['Đen'],
-        specifications: {
-          "Bộ xử lý": "Intel Core i7-1365U",
-          "RAM": "16 GB",
-          "Ổ cứng": "512 GB SSD",
-          "Màn hình": "14 inch, WUXGA IPS",
-          "Đồ họa": "Intel Iris Xe Graphics",
-          "Hệ điều hành": "Windows 11 Pro"
-        },
-      ),
-    ],
-    'Tai nghe': [
-      Product(
-        id: 'h1',
-        name: 'Sony WH-1000XM5',
-        image: 'assets/images/sonywh1000xm5.jpg',
-        price: 8750000,
-        rating: 4.8,
-        reviews: 213,
-        isAvailable: true,
-        colors: ['Đen', 'Bạc'],
-        specifications: {
-          "Loại": "Over-ear",
-          "Kết nối": "Bluetooth 5.2",
-          "Thời lượng pin": "30 giờ",
-          "Chống ồn": "Adaptive Noise Cancellation",
-          "Microphone": "8 microphones with AI noise reduction",
-          "Trọng lượng": "250g"
-        },
-      ),
-      Product(
-        id: 'h2',
-        name: 'Apple AirPods Pro 2',
-        image: 'assets/images/airpodspro2.jpg',
-        price: 6225000,
-        rating: 4.7,
-        reviews: 345,
-        isAvailable: true,
-        colors: ['Trắng'],
-        specifications: {
-          "Loại": "In-ear",
-          "Kết nối": "Bluetooth 5.3",
-          "Thời lượng pin": "6 giờ (30 giờ với case)",
-          "Chống ồn": "Active Noise Cancellation",
-          "Chống nước": "IP54",
-          "Trọng lượng": "5.3g (mỗi tai nghe)"
-        },
-      ),
-      Product(
-        id: 'h3',
-        name: 'Bose QuietComfort Ultra',
-        image: 'assets/images/boseqcultra.jpg',
-        price: 8225000,
-        rating: 4.6,
-        reviews: 127,
-        isAvailable: true,
-        colors: ['Đen', 'Trắng Khói'],
-        specifications: {
-          "Loại": "Over-ear",
-          "Kết nối": "Bluetooth 5.1",
-          "Thời lượng pin": "24 giờ",
-          "Chống ồn": "CustomTune ANC",
-          "Âm thanh": "Spatial Audio",
-          "Trọng lượng": "240g"
-        },
-      ),
-    ],
-    'Đồng hồ thông minh': [
-      Product(
-        id: 'w1',
-        name: 'Apple Watch Series 9',
-        image: 'assets/images/applewatch9.jpg',
-        price: 10475000,
-        rating: 4.8,
-        reviews: 189,
-        isAvailable: true,
-        colors: ['Đen Nửa Đêm', 'Ánh Sao', 'Bạc', 'Đỏ'],
-        specifications: {
-          "Kích thước": "45mm",
-          "Màn hình": "LTPO OLED Always-On Retina",
-          "Chip": "Apple S9",
-          "Bộ nhớ": "64 GB",
-          "Pin": "18 giờ",
-          "Chống nước": "50m",
-          "Kết nối": "Bluetooth 5.3, Wi-Fi, LTE (tùy chọn)"
-        },
-      ),
-      Product(
-        id: 'w2',
-        name: 'Samsung Galaxy Watch 6',
-        image: 'assets/images/galaxywatch6.jpg',
-        price: 8500000,
-        rating: 4.6,
-        reviews: 142,
-        isAvailable: true,
-        colors: ['Đen Graphite', 'Bạc'],
-        specifications: {
-          "Kích thước": "44mm",
-          "Màn hình": "Super AMOLED",
-          "Chip": "Exynos W930",
-          "RAM": "2 GB",
-          "Bộ nhớ": "16 GB",
-          "Pin": "425 mAh (40 giờ)",
-          "Chống nước": "IP68, 5ATM"
-        },
-      ),
-      Product(
-        id: 'w3',
-        name: 'Garmin Venu 3',
-        image: 'assets/images/garminvenu3.jpg',
-        price: 12000000,
-        rating: 4.7,
-        reviews: 89,
-        isAvailable: true,
-        colors: ['Đen', 'Bạc', 'Xám Đá'],
-        specifications: {
-          "Kích thước": "45mm",
-          "Màn hình": "AMOLED",
-          "Pin": "14 ngày (chế độ thông minh)",
-          "Bộ nhớ": "8 GB",
-          "GPS": "Multi-GNSS",
-          "Tính năng sức khỏe": "Theo dõi nhịp tim, SpO2, giấc ngủ, stress",
-          "Chống nước": "5ATM"
         },
       ),
     ],
@@ -450,6 +249,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   Widget _buildProductCard(Product product) {
     return InkWell(
       onTap: () => _navigateToProductDetail(product),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -466,27 +266,35 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product image with "Out of Stock" overlay if needed
+            // Product image with badges
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                   child: AspectRatio(
                     aspectRatio: 1,
-                    child: Container(
-                      color: Colors.grey.shade100,
-                      child: Center(
-                        child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
-                      ),
+                    child: Image.asset(
+                      product.image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey.shade100,
+                          child: Center(
+                            child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
+
+                // Out of Stock overlay
                 if (!product.isAvailable)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
                       ),
                       child: const Center(
                         child: Text(
@@ -496,6 +304,75 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Discount tag
+                if (product.discountPercent != null)
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomLeft: Radius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        "-${product.discountPercent}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Hot label
+                if (product.isHot && product.isAvailable)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.deepOrange.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "HOT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // New label
+                if (product.isNew && product.isAvailable)
+                  Positioned(
+                    top: product.isHot ? 40 : 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "MỚI",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
                         ),
                       ),
                     ),
@@ -516,25 +393,69 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
+
+                  // Price section with original price if available
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        _formatCurrency(product.price),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  if (product.originalPrice != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        _formatCurrency(product.originalPrice!),
+                        style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 6),
+
+                  // Rating and shipping info
                   Row(
                     children: [
                       Icon(Icons.star, size: 16, color: Colors.amber.shade700),
                       const SizedBox(width: 2),
-                      Text(product.rating.toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                      const SizedBox(width: 4),
                       Text(
-                        '(${product.reviews})',
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                        product.rating.toString(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
                       ),
+
+                      const Spacer(),
+
+                      if (product.isFreeShipping)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          child: Text(
+                            "Free ship",
+                            style: TextStyle(
+                              color: Colors.blue.shade700,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
                     ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _formatCurrency(product.price),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
                   ),
                 ],
               ),
@@ -548,6 +469,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
   Widget _buildProductListItem(Product product) {
     return InkWell(
       onTap: () => _navigateToProductDetail(product),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -564,29 +486,37 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product image
+            // Product image with badges
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
                   child: SizedBox(
                     width: 120,
                     height: 120,
-                    child: Container(
-                      color: Colors.grey.shade100,
-                      child: Center(
-                        child: Icon(Icons.photo, size: 40, color: Colors.grey.shade400),
-                      ),
+                    child: Image.asset(
+                      product.image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey.shade100,
+                          child: Center(
+                            child: Icon(Icons.photo, size: 40, color: Colors.grey.shade400),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
+
+                // Out of Stock overlay
                 if (!product.isAvailable)
                   Positioned.fill(
                     child: Container(
                       width: 120,
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
+                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
                       ),
                       child: const Center(
                         child: Text(
@@ -597,6 +527,75 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                             fontSize: 12,
                             letterSpacing: 1,
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Discount tag
+                if (product.discountPercent != null)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomRight: Radius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        "-${product.discountPercent}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // Hot label
+                if (product.isHot && product.isAvailable)
+                  Positioned(
+                    bottom: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.deepOrange.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "HOT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                // New label
+                if (product.isNew && product.isAvailable)
+                  Positioned(
+                    bottom: product.isHot ? 40 : 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade600,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        "MỚI",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
                         ),
                       ),
                     ),
@@ -621,36 +620,98 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
+
+                    // Price section
                     Row(
                       children: [
-                        Icon(Icons.star, size: 16, color: Colors.amber.shade700),
-                        const SizedBox(width: 2),
-                        Text(product.rating.toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
-                        const SizedBox(width: 4),
                         Text(
-                          '(${product.reviews})',
-                          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                          _formatCurrency(product.price),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.red,
+                          ),
                         ),
+                        const SizedBox(width: 8),
+                        if (product.originalPrice != null)
+                          Text(
+                            _formatCurrency(product.originalPrice!),
+                            style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey.shade600,
+                              fontSize: 12,
+                            ),
+                          ),
                       ],
                     ),
+
                     const SizedBox(height: 8),
-                    Text(
-                      _formatCurrency(product.price),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+
+                    // Rating and free shipping
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade100,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, size: 12, color: Colors.amber.shade700),
+                              const SizedBox(width: 2),
+                              Text(
+                                "${product.rating}",
+                                style: TextStyle(
+                                  color: Colors.amber.shade900,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "${product.reviews} đánh giá",
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        if (product.isFreeShipping) ...[
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              "Miễn phí vận chuyển",
+                              style: TextStyle(
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
+
                     const SizedBox(height: 8),
+
+                    // Colors info
                     if (product.colors.isNotEmpty)
                       Text(
-                        'Màu: ${product.colors.join(", ")}',
+                        "${product.colors.length} màu",
                         style: TextStyle(
                           color: Colors.grey.shade700,
                           fontSize: 12,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                   ],
                 ),
@@ -708,6 +769,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           reviews: product.reviews,
           colors: product.colors,
           specifications: product.specifications,
+          discountPrice: product.originalPrice?.toDouble(),
+          discountPercent: product.discountPercent,
+          isFreeShipping: product.isFreeShipping,
         ),
       ),
     );

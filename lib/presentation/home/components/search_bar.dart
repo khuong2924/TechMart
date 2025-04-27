@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
 
-class SearchBarWidget extends StatelessWidget {
-  const SearchBarWidget({Key? key}) : super(key: key);
+class CustomSearchBar extends StatelessWidget {
+  final String hintText;
+  final VoidCallback? onTap;
+  final TextEditingController? controller;
+
+  const CustomSearchBar({
+    Key? key,
+    this.hintText = 'Tìm kiếm sản phẩm...',
+    this.onTap,
+    this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 18),
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1C000000),
-            blurRadius: 34,
-            offset: Offset(0, 9),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextField(
+        controller: controller,
+        onTap: onTap,
         decoration: InputDecoration(
-          hintText: 'Try search here..',
-          hintStyle: const TextStyle(
-            color: Color(0xFF757575),
-            fontSize: 14,
-            fontFamily: 'Lato',
-            fontWeight: FontWeight.w400,
+          hintText: hintText,
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
           ),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          filled: true,
+          fillColor: Colors.grey.shade200,
+          contentPadding: const EdgeInsets.symmetric(vertical: 0),
         ),
       ),
     );
