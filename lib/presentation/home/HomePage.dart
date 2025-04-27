@@ -2,9 +2,21 @@ import 'package:flutter/material.dart';
 import 'components/search_bar.dart';
 import 'components/product_card.dart';
 import 'components/section_header.dart';
-import '../category/CategoryDetailsPage.dart';  
+import 'package:tech_mart/presentation/category/CategoryDetailsPage.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  void _onCategoryTap(BuildContext context, String categoryName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CategoryDetailsPage(
+          categoryName: categoryName,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +55,12 @@ class HomePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) {
-                  List<String> categories = ['Smartphones', 'Laptops', 'Accessories', 'Audio'];
-                  List<IconData> icons = [Icons.smartphone, Icons.laptop, Icons.headphones, Icons.speaker];
-                  return CategoryItem(icon: icons[index], title: categories[index]);
+                  List<String> categories = ['Smartphones', 'Laptops', 'Headphones', 'Smartwatches'];
+                  List<IconData> icons = [Icons.smartphone, Icons.laptop, Icons.headphones, Icons.watch];
+                  return GestureDetector(
+                    onTap: () => _onCategoryTap(context, categories[index]),
+                    child: CategoryItem(icon: icons[index], title: categories[index]),
+                  );
                 }),
               ),
             ),
@@ -110,51 +125,23 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CategoryDetailsPage(categoryName: title),
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12),
           ),
-        );
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, size: 30),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CategoryDetailsPage extends StatelessWidget {
-  final String categoryName;
-
-  const CategoryDetailsPage({Key? key, required this.categoryName}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(categoryName),
-      ),
-      body: Center(
-        child: Text('Details for $categoryName'),
-      ),
+          child: Icon(icon, size: 30),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 12),
+        ),
+      ],
     );
   }
 }
