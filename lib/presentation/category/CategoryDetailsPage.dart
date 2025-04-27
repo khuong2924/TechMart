@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
+import 'package:intl/intl.dart';
 
 class Product {
   final String id;
   final String name;
   final String image;
-  final double price;
+  final int price; // Giá bằng VND
   final double rating;
   final int reviews;
   final bool isAvailable;
   final List<String> colors;
+  final Map<String, String> specifications;
 
   Product({
     required this.id,
@@ -20,6 +22,7 @@ class Product {
     required this.reviews,
     required this.isAvailable,
     required this.colors,
+    required this.specifications,
   });
 }
 
@@ -36,147 +39,258 @@ class CategoryDetailsPage extends StatefulWidget {
 }
 
 class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
-  String _selectedFilter = 'Popular';
+  String _selectedFilter = 'Phổ biến';
   bool _isGridView = true;
 
-  // Mock data - products by category
+  // Dữ liệu mẫu - sản phẩm theo danh mục
   final Map<String, List<Product>> _productsByCategory = {
-    'Smartphones': [
+    'Điện thoại': [
       Product(
         id: 's1',
         name: 'iPhone 15 Pro',
         image: 'assets/images/iphone15pro.jpg',
-        price: 119900,
+        price: 29970000, // Chuyển đổi từ INR sang VND (xấp xỉ)
         rating: 4.8,
         reviews: 324,
         isAvailable: true,
-        colors: ['Space Black', 'Silver', 'Natural Titanium', 'Blue Titanium'],
+        colors: ['Đen Titan', 'Bạc', 'Titan Tự nhiên', 'Titan Xanh'],
+        specifications: {
+          "Màn hình": "6.1 inch, OLED, Super Retina XDR",
+          "Chip": "A17 Pro",
+          "RAM": "8 GB",
+          "Bộ nhớ trong": "128 GB",
+          "Camera sau": "48MP + 12MP + 12MP",
+          "Camera trước": "12MP",
+          "Pin": "3274 mAh"
+        },
       ),
       Product(
         id: 's2',
         name: 'Samsung Galaxy S24 Ultra',
         image: 'assets/images/s24ultra.jpg',
-        price: 129999,
+        price: 32500000,
         rating: 4.7,
         reviews: 289,
         isAvailable: true,
-        colors: ['Titanium Black', 'Titanium Gray', 'Titanium Violet'],
+        colors: ['Đen Titan', 'Xám Titan', 'Tím Titan'],
+        specifications: {
+          "Màn hình": "6.8 inch, Dynamic AMOLED 2X",
+          "Chip": "Snapdragon 8 Gen 3",
+          "RAM": "12 GB",
+          "Bộ nhớ trong": "256 GB",
+          "Camera sau": "200MP + 12MP + 50MP + 10MP",
+          "Camera trước": "12MP",
+          "Pin": "5000 mAh"
+        },
       ),
       Product(
         id: 's3',
         name: 'Google Pixel 8 Pro',
         image: 'assets/images/pixel8pro.jpg',
-        price: 99999,
+        price: 25000000,
         rating: 4.6,
         reviews: 178,
         isAvailable: true,
-        colors: ['Obsidian', 'Porcelain', 'Bay'],
+        colors: ['Đen Obsidian', 'Trắng Sứ', 'Xanh Bay'],
+        specifications: {
+          "Màn hình": "6.7 inch, LTPO OLED",
+          "Chip": "Google Tensor G3",
+          "RAM": "12 GB",
+          "Bộ nhớ trong": "128 GB",
+          "Camera sau": "50MP + 48MP + 48MP",
+          "Camera trước": "10.5MP",
+          "Pin": "5050 mAh"
+        },
       ),
       Product(
         id: 's4',
         name: 'OnePlus 12',
         image: 'assets/images/oneplus12.jpg',
-        price: 64999,
+        price: 16250000,
         rating: 4.5,
         reviews: 256,
         isAvailable: true,
-        colors: ['Silky Black', 'Eternal Green'],
+        colors: ['Đen Lụa', 'Xanh Bất Tận'],
+        specifications: {
+          "Màn hình": "6.82 inch, LTPO AMOLED",
+          "Chip": "Snapdragon 8 Gen 3",
+          "RAM": "12 GB",
+          "Bộ nhớ trong": "256 GB",
+          "Camera sau": "50MP + 48MP + 64MP",
+          "Camera trước": "32MP",
+          "Pin": "5400 mAh"
+        },
       ),
     ],
-    'Laptops': [
+    'Laptop': [
       Product(
         id: 'l1',
         name: 'MacBook Pro 16"',
         image: 'assets/images/macbook16.jpg',
-        price: 249900,
+        price: 62500000,
         rating: 4.9,
         reviews: 167,
         isAvailable: true,
-        colors: ['Space Gray', 'Silver'],
+        colors: ['Xám Không Gian', 'Bạc'],
+        specifications: {
+          "Bộ xử lý": "Apple M3 Pro",
+          "RAM": "32 GB",
+          "Ổ cứng": "1 TB SSD",
+          "Màn hình": "16 inch, Liquid Retina XDR",
+          "Đồ họa": "M3 Pro 19-core GPU",
+          "Hệ điều hành": "macOS Sonoma"
+        },
       ),
       Product(
         id: 'l2',
         name: 'Dell XPS 15',
         image: 'assets/images/xps15.jpg',
-        price: 179990,
+        price: 45000000,
         rating: 4.7,
         reviews: 142,
         isAvailable: true,
-        colors: ['Platinum Silver'],
+        colors: ['Bạc Platinum'],
+        specifications: {
+          "Bộ xử lý": "Intel Core i9-13900H",
+          "RAM": "32 GB",
+          "Ổ cứng": "1 TB SSD",
+          "Màn hình": "15.6 inch, OLED 3.5K",
+          "Đồ họa": "NVIDIA GeForce RTX 4070",
+          "Hệ điều hành": "Windows 11 Pro"
+        },
       ),
       Product(
         id: 'l3',
         name: 'Lenovo ThinkPad X1 Carbon',
         image: 'assets/images/thinkpadx1.jpg',
-        price: 159990,
+        price: 40000000,
         rating: 4.6,
         reviews: 98,
         isAvailable: false,
-        colors: ['Black'],
+        colors: ['Đen'],
+        specifications: {
+          "Bộ xử lý": "Intel Core i7-1365U",
+          "RAM": "16 GB",
+          "Ổ cứng": "512 GB SSD",
+          "Màn hình": "14 inch, WUXGA IPS",
+          "Đồ họa": "Intel Iris Xe Graphics",
+          "Hệ điều hành": "Windows 11 Pro"
+        },
       ),
     ],
-    'Headphones': [
+    'Tai nghe': [
       Product(
         id: 'h1',
         name: 'Sony WH-1000XM5',
         image: 'assets/images/sonywh1000xm5.jpg',
-        price: 34990,
+        price: 8750000,
         rating: 4.8,
         reviews: 213,
         isAvailable: true,
-        colors: ['Black', 'Silver'],
+        colors: ['Đen', 'Bạc'],
+        specifications: {
+          "Loại": "Over-ear",
+          "Kết nối": "Bluetooth 5.2",
+          "Thời lượng pin": "30 giờ",
+          "Chống ồn": "Adaptive Noise Cancellation",
+          "Microphone": "8 microphones with AI noise reduction",
+          "Trọng lượng": "250g"
+        },
       ),
       Product(
         id: 'h2',
         name: 'Apple AirPods Pro 2',
         image: 'assets/images/airpodspro2.jpg',
-        price: 24900,
+        price: 6225000,
         rating: 4.7,
         reviews: 345,
         isAvailable: true,
-        colors: ['White'],
+        colors: ['Trắng'],
+        specifications: {
+          "Loại": "In-ear",
+          "Kết nối": "Bluetooth 5.3",
+          "Thời lượng pin": "6 giờ (30 giờ với case)",
+          "Chống ồn": "Active Noise Cancellation",
+          "Chống nước": "IP54",
+          "Trọng lượng": "5.3g (mỗi tai nghe)"
+        },
       ),
       Product(
         id: 'h3',
         name: 'Bose QuietComfort Ultra',
         image: 'assets/images/boseqcultra.jpg',
-        price: 32900,
+        price: 8225000,
         rating: 4.6,
         reviews: 127,
         isAvailable: true,
-        colors: ['Black', 'White Smoke'],
+        colors: ['Đen', 'Trắng Khói'],
+        specifications: {
+          "Loại": "Over-ear",
+          "Kết nối": "Bluetooth 5.1",
+          "Thời lượng pin": "24 giờ",
+          "Chống ồn": "CustomTune ANC",
+          "Âm thanh": "Spatial Audio",
+          "Trọng lượng": "240g"
+        },
       ),
     ],
-    'Smartwatches': [
+    'Đồng hồ thông minh': [
       Product(
         id: 'w1',
         name: 'Apple Watch Series 9',
         image: 'assets/images/applewatch9.jpg',
-        price: 41900,
+        price: 10475000,
         rating: 4.8,
         reviews: 189,
         isAvailable: true,
-        colors: ['Midnight', 'Starlight', 'Silver', 'Product RED'],
+        colors: ['Đen Nửa Đêm', 'Ánh Sao', 'Bạc', 'Đỏ'],
+        specifications: {
+          "Kích thước": "45mm",
+          "Màn hình": "LTPO OLED Always-On Retina",
+          "Chip": "Apple S9",
+          "Bộ nhớ": "64 GB",
+          "Pin": "18 giờ",
+          "Chống nước": "50m",
+          "Kết nối": "Bluetooth 5.3, Wi-Fi, LTE (tùy chọn)"
+        },
       ),
       Product(
         id: 'w2',
         name: 'Samsung Galaxy Watch 6',
         image: 'assets/images/galaxywatch6.jpg',
-        price: 33999,
+        price: 8500000,
         rating: 4.6,
         reviews: 142,
         isAvailable: true,
-        colors: ['Graphite', 'Silver'],
+        colors: ['Đen Graphite', 'Bạc'],
+        specifications: {
+          "Kích thước": "44mm",
+          "Màn hình": "Super AMOLED",
+          "Chip": "Exynos W930",
+          "RAM": "2 GB",
+          "Bộ nhớ": "16 GB",
+          "Pin": "425 mAh (40 giờ)",
+          "Chống nước": "IP68, 5ATM"
+        },
       ),
       Product(
         id: 'w3',
         name: 'Garmin Venu 3',
         image: 'assets/images/garminvenu3.jpg',
-        price: 47990,
+        price: 12000000,
         rating: 4.7,
         reviews: 89,
         isAvailable: true,
-        colors: ['Black', 'Silver', 'Slate'],
+        colors: ['Đen', 'Bạc', 'Xám Đá'],
+        specifications: {
+          "Kích thước": "45mm",
+          "Màn hình": "AMOLED",
+          "Pin": "14 ngày (chế độ thông minh)",
+          "Bộ nhớ": "8 GB",
+          "GPS": "Multi-GNSS",
+          "Tính năng sức khỏe": "Theo dõi nhịp tim, SpO2, giấc ngủ, stress",
+          "Chống nước": "5ATM"
+        },
       ),
     ],
   };
@@ -227,7 +341,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Found ${_currentProducts.length} products',
+                  'Tìm thấy ${_currentProducts.length} sản phẩm',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w500,
@@ -238,11 +352,11 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _buildFilterChip('Popular', Icons.trending_up),
-                      _buildFilterChip('Newest', Icons.new_releases),
-                      _buildFilterChip('Price: Low to High', Icons.arrow_upward),
-                      _buildFilterChip('Price: High to Low', Icons.arrow_downward),
-                      _buildFilterChip('Rating', Icons.star),
+                      _buildFilterChip('Phổ biến', Icons.trending_up),
+                      _buildFilterChip('Mới nhất', Icons.new_releases),
+                      _buildFilterChip('Giá: Thấp đến cao', Icons.arrow_upward),
+                      _buildFilterChip('Giá: Cao đến thấp', Icons.arrow_downward),
+                      _buildFilterChip('Đánh giá', Icons.star),
                     ],
                   ),
                 ),
@@ -376,7 +490,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                       ),
                       child: const Center(
                         child: Text(
-                          'OUT OF STOCK',
+                          'HẾT HÀNG',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -416,7 +530,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '₹${product.price.toStringAsFixed(0)}',
+                    _formatCurrency(product.price),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -476,7 +590,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                       ),
                       child: const Center(
                         child: Text(
-                          'OUT OF STOCK',
+                          'HẾT HÀNG',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -521,7 +635,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '₹${product.price.toStringAsFixed(0)}',
+                      _formatCurrency(product.price),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -530,7 +644,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                     const SizedBox(height: 8),
                     if (product.colors.isNotEmpty)
                       Text(
-                        'Colors: ${product.colors.join(", ")}',
+                        'Màu: ${product.colors.join(", ")}',
                         style: TextStyle(
                           color: Colors.grey.shade700,
                           fontSize: 12,
@@ -556,7 +670,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           Icon(Icons.production_quantity_limits, size: 60, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'No products found',
+            'Không tìm thấy sản phẩm',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -565,7 +679,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'We couldn\'t find any products\nin this category.',
+            'Chúng tôi không tìm thấy sản phẩm nào\ntrong danh mục này.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.grey.shade600,
@@ -576,6 +690,11 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
     );
   }
 
+  String _formatCurrency(int amount) {
+    final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
+    return formatter.format(amount);
+  }
+
   void _navigateToProductDetail(Product product) {
     Navigator.push(
       context,
@@ -584,17 +703,11 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           id: product.id,
           name: product.name,
           image: product.image,
-          price: product.price,
+          price: product.price.toDouble(),
           rating: product.rating,
           reviews: product.reviews,
           colors: product.colors,
-          specifications: {
-            "Processor": "Intel Core i9 9th Gen",
-            "Memory": "16 GB",
-            "Storage": "1 TB SSD",
-            "OS": "Mac OS Catalina",
-            "Graphics": "4 GB Graphics"
-          },
+          specifications: product.specifications,
         ),
       ),
     );

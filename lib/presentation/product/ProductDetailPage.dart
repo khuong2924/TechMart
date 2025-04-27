@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String id;
@@ -38,17 +39,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final List<Map<String, String>> _offers = [
     {
       'icon': 'bank_offer',
-      'title': '5% Unlimited Cashback on Flipkart Axis Bank Credit Card',
+      'title': '5% Unlimited Cashback on Bank Credit Card',
       'description': '',
     },
     {
       'icon': 'rupay',
-      'title': 'Flat ₹30 discount on first prepaid transaction using RuPay debit card',
-      'description': 'minimum order value ₹750',
+      'title': 'Flat 30 discount on first prepaid transaction using RuPay debit card',
+      'description': 'minimum order value 750',
     },
     {
       'icon': 'upi',
-      'title': '₹30 Off on first prepaid transaction using UPI',
+      'title': '30 Off on first prepaid transaction using UPI',
       'description': 'Minimum order value 750/-',
     },
   ];
@@ -138,7 +139,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   
                   // Price
                   Text(
-                    "₹${_formatPrice(widget.price)}",
+                    _formatPrice(widget.price),
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -201,7 +202,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     Icons.local_shipping_outlined
                   ),
                   _buildDeliveryOption(
-                    "No cost EMI\n₹22,212/month", 
+                    "No cost EMI\n22,212/month", 
                     Icons.calendar_month_outlined
                   ),
                   _buildDeliveryOption(
@@ -318,7 +319,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                       ),
                       Text(
-                        " ₹40",
+                        " 40",
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           decoration: TextDecoration.lineThrough,
@@ -571,21 +572,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
   
   String _formatPrice(double price) {
-    // Format number with Indian comma system
-    String priceStr = price.toStringAsFixed(0);
-    String result = '';
-    int count = 0;
-    
-    for (int i = priceStr.length - 1; i >= 0; i--) {
-      count++;
-      result = priceStr[i] + result;
-      if (count == 3 && i > 0) {
-        result = ',' + result;
-      } else if (count > 3 && count % 2 == 0 && i > 0) {
-        result = ',' + result;
-      }
-    }
-    
-    return result;
+    final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
+    return formatter.format(price);
   }
 }
