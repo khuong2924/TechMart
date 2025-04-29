@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tech_mart/models/product.dart';
+import 'package:tech_mart/models/product.dart' hide ProductSpecification;
+import 'package:tech_mart/models/product_specification.dart';
+
 import 'components/search_bar.dart';
 import 'components/product_card.dart';
 import 'components/section_header.dart';
@@ -9,7 +11,8 @@ import 'components/brand_item.dart';
 import 'components/promotion_card.dart';
 import 'components/category_item.dart'; 
 import 'package:tech_mart/presentation/category/CategoryDetailsPage.dart';
-import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
+import 'package:tech_mart/presentation/product/ProductDetailPage.dart' ;
+
 import 'package:intl/intl.dart';
 
 class HomePage extends StatelessWidget {
@@ -44,14 +47,14 @@ class HomePage extends StatelessWidget {
         rating: 4.9,
         reviews: 167,
         colors: ['Xám không gian', 'Bạc'],
-        specifications: {
-          "Bộ xử lý": "Apple M3 Pro",
-          "RAM": "16 GB",
-          "Ổ cứng": "512 GB SSD",
-          "Màn hình": "14.2 inch, Liquid Retina XDR",
-          "Đồ họa": "Apple M3 Pro 14-core GPU",
-          "Hệ điều hành": "macOS Sonoma"
-        },
+        specifications: ProductSpecification(
+          processor: "Apple M3 Pro",
+          ram: "16 GB",
+          storage: "512 GB SSD",
+          display: "14.2 inch, Liquid Retina XDR",
+          graphics: "Apple M3 Pro 14-core GPU",
+          operatingSystem: "macOS Sonoma",
+        ),
       ),
       Product(
         id: 'jbl-headset',
@@ -62,13 +65,15 @@ class HomePage extends StatelessWidget {
         rating: 4.6,
         reviews: 856,
         colors: ['Đen', 'Trắng', 'Xanh'],
-        specifications: {
-          "Loại": "On-ear",
-          "Kết nối": "Bluetooth 4.0",
-          "Thời lượng pin": "11 giờ",
-          "Phạm vi kết nối": "10m",
-          "Trọng lượng": "150g"
-        },
+        specifications: ProductSpecification(
+          connectionType: "Bluetooth 4.0",
+          batteryLife: "11 giờ",
+          weight: "150g",
+          additionalSpecs: {
+            "Loại": "On-ear",
+            "Phạm vi kết nối": "10m",
+          },
+        ),
       ),
       Product(
         id: 'canon-90d',
@@ -79,13 +84,15 @@ class HomePage extends StatelessWidget {
         rating: 4.7,
         reviews: 253,
         colors: ['Đen'],
-        specifications: {
-          "Cảm biến": "APS-C CMOS 32.5MP",
-          "Bộ xử lý": "DIGIC 8",
-          "Quay video": "4K 30p",
-          "Màn hình": "3.0\" LCD cảm ứng",
-          "Trọng lượng": "701g"
-        },
+        specifications: ProductSpecification(
+          processor: "DIGIC 8",
+          display: "3.0\" LCD cảm ứng",
+          weight: "701g",
+          additionalSpecs: {
+            "Cảm biến": "APS-C CMOS 32.5MP",
+            "Quay video": "4K 30p",
+          },
+        ),
       ),
       Product(
         id: 'galaxy-watch6',
@@ -96,14 +103,14 @@ class HomePage extends StatelessWidget {
         rating: 4.5,
         reviews: 389,
         colors: ['Đen', 'Bạc', 'Vàng hồng'],
-        specifications: {
-          "Kích thước": "44mm",
-          "Màn hình": "Super AMOLED",
-          "Chip": "Exynos W930",
-          "RAM": "2 GB",
-          "Bộ nhớ": "16 GB",
-          "Pin": "425 mAh (40 giờ)"
-        },
+        specifications: ProductSpecification(
+          processor: "Exynos W930",
+          ram: "2 GB",
+          storage: "16 GB",
+          display: "Super AMOLED",
+          battery: "425 mAh (40 giờ)",
+          size: "44mm",
+        ),
       ),
     ];
 
@@ -117,14 +124,14 @@ class HomePage extends StatelessWidget {
         rating: 4.7,
         reviews: 120,
         colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: {
-          "Màn hình": "6.1 inch, Super Retina XDR",
-          "Chip": "Apple A16 Bionic",
-          "RAM": "6 GB",
-          "Bộ nhớ trong": "128 GB",
-          "Camera sau": "48MP + 12MP",
-          "Camera trước": "12MP"
-        },
+        specifications: ProductSpecification(
+          processor: "Apple A16 Bionic",
+          ram: "6 GB",
+          storage: "128 GB",
+          display: "6.1 inch, Super Retina XDR",
+          camera: "48MP + 12MP",
+          frontCamera: "12MP",
+        ),
       ),
       Product(
         id: 'iphone15',
@@ -135,14 +142,14 @@ class HomePage extends StatelessWidget {
         rating: 4.8,
         reviews: 85,
         colors: ['Đen', 'Trắng', 'Xanh'],
-        specifications: {
-          "Màn hình": "6.1 inch, Super Retina XDR",
-          "Chip": "Apple A16 Bionic",
-          "RAM": "6 GB",
-          "Bộ nhớ trong": "128 GB",
-          "Camera sau": "48MP + 12MP",
-          "Camera trước": "12MP"
-        },
+        specifications: ProductSpecification(
+          processor: "Apple A16 Bionic",
+          ram: "6 GB",
+          storage: "128 GB",
+          display: "6.1 inch, Super Retina XDR",
+          camera: "48MP + 12MP",
+          frontCamera: "12MP",
+        ),
       ),
       Product(
         id: 'xiaomi14',
@@ -153,14 +160,14 @@ class HomePage extends StatelessWidget {
         rating: 4.6,
         reviews: 65,
         colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: {
-          "Màn hình": "6.1 inch, Super Retina XDR",
-          "Chip": "Apple A16 Bionic",
-          "RAM": "6 GB",
-          "Bộ nhớ trong": "128 GB",
-          "Camera sau": "48MP + 12MP",
-          "Camera trước": "12MP"
-        },
+        specifications: ProductSpecification(
+          processor: "Apple A16 Bionic",
+          ram: "6 GB",
+          storage: "128 GB",
+          display: "6.1 inch, Super Retina XDR",
+          camera: "48MP + 12MP",
+          frontCamera: "12MP",
+        ),
       ),
       Product(
         id: 'findx7',
@@ -171,14 +178,14 @@ class HomePage extends StatelessWidget {
         rating: 4.5,
         reviews: 50,
         colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: {
-          "Màn hình": "6.1 inch, Super Retina XDR",
-          "Chip": "Apple A16 Bionic",
-          "RAM": "6 GB",
-          "Bộ nhớ trong": "128 GB",
-          "Camera sau": "48MP + 12MP",
-          "Camera trước": "12MP"
-        },
+        specifications: ProductSpecification(
+          processor: "Apple A16 Bionic",
+          ram: "6 GB",
+          storage: "128 GB",
+          display: "6.1 inch, Super Retina XDR",
+          camera: "48MP + 12MP",
+          frontCamera: "12MP",
+        ),
       ),
     ];
 
@@ -273,8 +280,8 @@ class HomePage extends StatelessWidget {
                     child: Row(
                       children: flashSaleProducts.map((product) {
                         return FlashSaleItem(
-                          product: product, // convert Product trực tiếp
-                          soldPercent: product.reviews.toDouble(), // Giữ nguyên soldPercent
+                          product: product,
+                          soldPercent: product.reviews.toDouble(),
                         );
                       }).toList(),
                     ),
@@ -307,7 +314,7 @@ class HomePage extends StatelessWidget {
                     crossAxisSpacing: 16,
                     children: featuredProducts.map((product) {
                       return ProductCard(
-                        product: product, // convert Product trực tiếp
+                        product: product,
                         showFavoriteButton: true, 
                         showPromotionTags: true,
                       );

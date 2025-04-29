@@ -1,4 +1,14 @@
 import 'package:intl/intl.dart';
+import 'package:tech_mart/models/product_specification.dart';
+
+class ProductSpecification {
+  const ProductSpecification();
+
+  factory ProductSpecification.fromMap(Map<String, String> map) {
+    // Implement the conversion logic here
+    return ProductSpecification();
+  }
+}
 
 class Product {
   final String id;
@@ -11,7 +21,7 @@ class Product {
   final int reviews;
   final bool isAvailable;
   final List<String> colors;
-  final Map<String, String> specifications;
+  final dynamic specifications; // Changed to dynamic to accept both types
   final bool isHot;
   final bool isNew; 
   final bool isFreeShipping;
@@ -32,6 +42,36 @@ class Product {
     this.isNew = false,
     this.isFreeShipping = true,
   });
+
+  factory Product.fromLegacy({
+    required String id,
+    required String name,
+    required String image,
+    required int price,
+    int? originalPrice,
+    String? discountPercent,
+    double? rating,
+    int reviews = 0,
+    bool isAvailable = true,
+    List<String> colors = const [],
+    bool isHot = false,
+    Map<String, String> specifications = const {},
+  }) {
+    return Product(
+      id: id,
+      name: name,
+      image: image,
+      price: price,
+      originalPrice: originalPrice,
+      discountPercent: discountPercent,
+      rating: rating ?? 0.0,
+      reviews: reviews,
+      isAvailable: isAvailable,
+      colors: colors,
+      isHot: isHot,
+      specifications: ProductSpecification.fromMap(specifications),
+    );
+  }
 
   int? get discountPercentValue {
     if (originalPrice != null && originalPrice! > price) {

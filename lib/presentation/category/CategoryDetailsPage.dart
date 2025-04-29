@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tech_mart/models/product.dart';
+import 'package:tech_mart/models/product.dart' hide ProductSpecification;  // Add 'hide ProductSpecification'
+import 'package:tech_mart/models/product_specification.dart';  // Add this import
 import 'package:tech_mart/presentation/product/ProductDetailPage.dart';
 import 'package:intl/intl.dart';
 
@@ -34,7 +35,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
         isAvailable: true,
         colors: ['Titan Đen', 'Titan Tự nhiên', 'Titan Xanh', 'Titan Trắng'],
         isHot: true,
-        specifications: {
+        specifications: ProductSpecification.fromMap({
           "Màn hình": "6.7 inch, OLED, Super Retina XDR",
           "Chip": "A17 Pro",
           "RAM": "8 GB",
@@ -42,7 +43,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           "Camera sau": "48MP + 12MP + 12MP",
           "Camera trước": "12MP",
           "Pin": "4422 mAh, sạc nhanh 27W"
-        },
+        }),
       ),
       Product(
         id: 's2',
@@ -768,7 +769,7 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
           rating: product.rating,
           reviews: product.reviews,
           colors: product.colors,
-          specifications: product.specifications,
+          specifications: product.specifications, // Already the right type
           discountPrice: product.originalPrice?.toDouble(),
           discountPercent: product.discountPercent,
           isFreeShipping: product.isFreeShipping,

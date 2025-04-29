@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tech_mart/models/product.dart' hide ProductSpecification;
+import 'package:tech_mart/models/product_specification.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String id;
@@ -9,7 +11,7 @@ class ProductDetailPage extends StatefulWidget {
   final double rating;
   final int reviews;
   final List<String> colors;
-  final Map<String, String> specifications;
+  final ProductSpecification specifications;
   final double? discountPrice; // Giá gốc trước khuyến mãi
   final String? discountPercent; // Phần trăm giảm giá
   final bool isFreeShipping; // Miễn phí vận chuyển
@@ -493,7 +495,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   Widget _buildSpecificationsSection() {
-    if (widget.specifications.isEmpty) {
+    Map<String, String> specificationsMap = widget.specifications.toMap();
+    if (specificationsMap.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -510,29 +513,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
           ),
           const SizedBox(height: 12),
-          ...widget.specifications.entries.map((entry) {
+          ...specificationsMap.entries.map((entry) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 120,
+                  Expanded(
+                    flex: 2,
                     child: Text(
-                      entry.key,
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 14,
+                      "${entry.key}:",
+                      style: const TextStyle(
+                        color: Colors.grey,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       entry.value,
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
-                        fontSize: 14,
                       ),
                     ),
                   ),
