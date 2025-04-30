@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/models/product.dart' hide ProductSpecification;
 import 'package:tech_mart/models/product_specification.dart';
+import 'package:tech_mart/presentation/cart/CartPage.dart';
 
 import 'components/search_bar.dart';
 import 'components/product_card.dart';
@@ -207,7 +208,14 @@ class HomePage extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CartPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

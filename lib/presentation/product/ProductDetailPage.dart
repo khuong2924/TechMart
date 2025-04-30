@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tech_mart/models/product.dart' hide ProductSpecification;
 import 'package:tech_mart/models/product_specification.dart';
+import 'package:tech_mart/presentation/cart/CartPage.dart'; // Thêm import này
 
 class ProductDetailPage extends StatefulWidget {
   final String id;
@@ -81,7 +82,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
           IconButton(
             icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CartPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

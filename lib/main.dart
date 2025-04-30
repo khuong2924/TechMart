@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tech_mart/presentation/auth/Starter.dart';
 import 'package:tech_mart/presentation/auth/Login.dart';
 import 'package:tech_mart/presentation/home/HomePage.dart';
+import 'package:tech_mart/presentation/cart/CartPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
             return _createRoute(const LoginPage(), settings);
           case '/home':
             return _createRoute(const HomePage(), settings);
+          case '/cart':
+            return _createRoute(const CartPage(), settings);
           case '/register':
             return _createRoute(const Placeholder(), settings);
           default:
