@@ -432,6 +432,81 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
 
+            const SizedBox(height: 30),
+
+            // Add to Cart and Buy Now Section
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        "THÊM VÀO GIỎ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade800,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () => _showAddToCartConfirmation(context),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(
+                        Icons.flash_on,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        "MUA NGAY",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade700,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () => _showBuyNowConfirmation(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             const SizedBox(height: 32),
           ],
         ),
@@ -763,5 +838,37 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   String _formatPrice(double price) {
     final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
     return formatter.format(price);
+  }
+
+  void _showAddToCartConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Thêm vào giỏ hàng"),
+        content: const Text("Sản phẩm đã được thêm vào giỏ hàng."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBuyNowConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Mua ngay"),
+        content: const Text("Bạn đã chọn mua sản phẩm này."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 }
