@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tech_mart/data/repositories/user_repository.dart';
 import 'package:tech_mart/models/user_profile.dart';
 import 'package:tech_mart/core/network/api_client.dart';
+import 'package:tech_mart/presentation/order/OrderListPage.dart';
+import 'package:tech_mart/providers/order_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -26,6 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _loadProfile();
+    // Load orders to update stats
+    Provider.of<OrderProvider>(context, listen: false).loadOrders();
   }
 
   Future<void> _loadProfile() async {
@@ -192,18 +197,28 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(
-                      'Orders',
-                      _profile!.orderCount.toString(),
-                      Icons.shopping_bag_outlined,
-                      isSmallScreen,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrderListPage(),
+                          ),
+                        );
+                      },
+                      child: _buildStatCard(
+                        'Orders',
+                        Provider.of<OrderProvider>(context).totalElements.toString(),
+                        Icons.shopping_bag_outlined,
+                        isSmallScreen,
+                      ),
                     ),
                   ),
                   SizedBox(width: isSmallScreen ? 12 : 16),
                   Expanded(
                     child: _buildStatCard(
                       'Total Spent',
-                      _formatCurrency(_profile!.totalSpent),
+                      _formatCurrency(Provider.of<OrderProvider>(context).totalSpent),
                       Icons.payments_outlined,
                       isSmallScreen,
                     ),

@@ -23,7 +23,7 @@ Future<void> main() async {
           create: (_) => CartProvider(CartRepository(ApiClient())),
         ),
         ChangeNotifierProvider(
-          create: (_) => OrderProvider(OrderRepository(ApiClient())),
+          create: (_) => OrderProvider(),
         ),
       ],
       child: const MyApp(),

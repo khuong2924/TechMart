@@ -6,17 +6,22 @@ class OrderRepository {
 
   OrderRepository(this._apiClient);
 
-  Future<List<Order>> getOrders({int page = 0, int size = 10}) async {
+  Future<Map<String, dynamic>> getOrders({int page = 0, int size = 10}) async {
     final response = await _apiClient.get(
       '/api/orders',
-      queryParameters: {
-        'page': page,
-        'size': size,
-      },
+      queryParameters: {'page': page, 'size': size},
     );
-    return (response.data['content'] as List)
+    
+    final List<Order> orders = (response.data['content'] as List)
         .map((json) => Order.fromJson(json))
         .toList();
+
+    return {
+      'orders': orders,
+      'totalElements': response.data['totalElements'],
+      'totalPages': response.data['totalPages'],
+      'currentPage': response.data['page'],
+    };
   }
 
   Future<Order> getOrderDetails(int orderId) async {

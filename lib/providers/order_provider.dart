@@ -1,20 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:tech_mart/data/repositories/order_repository.dart';
 import 'package:tech_mart/models/order.dart';
+import 'package:tech_mart/core/network/api_client.dart';
 
 class OrderProvider with ChangeNotifier {
-  final OrderRepository _orderRepository;
+  final OrderRepository _orderRepository = OrderRepository(ApiClient());
   List<Order> _orders = [];
   Order? _currentOrder;
   bool _isLoading = false;
   String? _error;
-
-  OrderProvider(this._orderRepository);
+  int _currentPage = 0;
+  int _totalPages = 0;
+  int _totalElements = 0;
+  double _totalSpent = 0;
 
   List<Order> get orders => _orders;
   Order? get currentOrder => _currentOrder;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  int get currentPage => _currentPage;
+  int get totalPages => _totalPages;
+  int get totalElements => _totalElements;
+  double get totalSpent => _totalSpent;
 
   Future<void> loadOrders({int page = 0, int size = 10}) async {
     _isLoading = true;
@@ -22,12 +29,26 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      _orders = await _orderRepository.getOrders(page: page, size: size);
+      final result = await _orderRepository.getOrders(page: page, size: size);
+      _orders = result['orders'];
+      _totalPages = result['totalPages'];
+      _totalElements = result['totalElements'];
+      _currentPage = result['currentPage'];
+      
+      // Calculate total spent
+      _totalSpent = _orders.fold(0, (sum, order) => sum + order.finalAmount);
     } catch (e) {
       _error = e.toString();
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> loadMoreOrders() async {
+    if (_currentPage < _totalPages - 1) {
+      _currentPage++;
+      await loadOrders(page: _currentPage);
     }
   }
 

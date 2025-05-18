@@ -1,65 +1,72 @@
 import 'package:tech_mart/models/cart_item.dart';
+import 'package:intl/intl.dart';
 
 class Order {
   final int id;
+  final String orderNumber;
   final DateTime orderDate;
+  final double finalAmount;
   final String status;
-  final String shippingAddress;
   final String paymentMethod;
-  final double subtotal;
-  final double shippingFee;
-  final double discount;
-  final double total;
-  final String? discountCode;
-  final String? notes;
-  final List<CartItem> items;
+  final String paymentStatus;
+  final int itemCount;
+  final String orderSummary;
+  final String? estimatedDeliveryDate;
+  final String? confirmationMessage;
+  final String? paymentUrl;
+  final String? transactionId;
 
   Order({
     required this.id,
+    required this.orderNumber,
     required this.orderDate,
+    required this.finalAmount,
     required this.status,
-    required this.shippingAddress,
     required this.paymentMethod,
-    required this.subtotal,
-    required this.shippingFee,
-    required this.discount,
-    required this.total,
-    this.discountCode,
-    this.notes,
-    required this.items,
+    required this.paymentStatus,
+    required this.itemCount,
+    required this.orderSummary,
+    this.estimatedDeliveryDate,
+    this.confirmationMessage,
+    this.paymentUrl,
+    this.transactionId,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['orderId'] ?? json['id'] ?? 0,
-      orderDate: DateTime.now(), // API không trả về orderDate, dùng tạm thời
-      status: json['paymentStatus'] ?? json['status'] ?? '',
-      shippingAddress: json['shippingAddress'] ?? '',
-      paymentMethod: json['paymentMethod'] ?? '',
-      subtotal: (json['totalAmount'] ?? json['subtotal'] ?? 0).toDouble(),
-      shippingFee: (json['shippingFee'] ?? 0).toDouble(),
-      discount: (json['discountAmount'] ?? json['discount'] ?? 0).toDouble(),
-      total: (json['totalAmount'] ?? json['total'] ?? 0).toDouble(),
-      discountCode: json['discountCode'] ?? json['appliedDiscountCode'],
-      notes: json['notes'],
-      items: (json['items'] as List?)?.map((item) => CartItem.fromJson(item)).toList() ?? [],
+      id: json['orderId'] ?? json['id'],
+      orderNumber: json['orderNumber'] ?? '',
+      orderDate: json['orderDate'] != null 
+          ? DateTime.parse(json['orderDate']) 
+          : DateTime.now(),
+      finalAmount: (json['totalAmount'] ?? json['finalAmount'] ?? 0.0).toDouble(),
+      status: json['status'] ?? 'PENDING',
+      paymentMethod: json['paymentMethod'] ?? 'CASH',
+      paymentStatus: json['paymentStatus'] ?? 'PENDING',
+      itemCount: json['itemCount'] ?? 0,
+      orderSummary: json['orderSummary'] ?? '',
+      estimatedDeliveryDate: json['estimatedDeliveryDate'],
+      confirmationMessage: json['confirmationMessage'],
+      paymentUrl: json['paymentUrl'],
+      transactionId: json['transactionId'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'orderId': id,
+      'orderNumber': orderNumber,
       'orderDate': orderDate.toIso8601String(),
+      'totalAmount': finalAmount,
       'status': status,
-      'shippingAddress': shippingAddress,
       'paymentMethod': paymentMethod,
-      'subtotal': subtotal,
-      'shippingFee': shippingFee,
-      'discount': discount,
-      'total': total,
-      'discountCode': discountCode,
-      'notes': notes,
-      'items': items.map((item) => item.toJson()).toList(),
+      'paymentStatus': paymentStatus,
+      'itemCount': itemCount,
+      'orderSummary': orderSummary,
+      'estimatedDeliveryDate': estimatedDeliveryDate,
+      'confirmationMessage': confirmationMessage,
+      'paymentUrl': paymentUrl,
+      'transactionId': transactionId,
     };
   }
 } 
