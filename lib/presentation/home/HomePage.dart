@@ -280,41 +280,54 @@ class _HomePageState extends State<HomePage> {
               children: [
                 SizedBox(height: isSmallScreen ? 16 : 20),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : (isMediumScreen ? 24 : 48)),
                   child: const CustomSearchBar(
                     hintText: 'Tìm kiếm sản phẩm...',
                   ),
                 ),
                 SizedBox(height: isSmallScreen ? 20 : 24),
                 // Banner khuyến mãi 
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      'https://cdnv2.tgdd.vn/mwg-static/common/News/1573973/Thumb.jpg',
-                      height: isSmallScreen ? 120 : 150,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: isSmallScreen ? 120 : 150,
-                        color: Colors.grey.shade200,
-                        child: const Center(child: Icon(Icons.image, size: 48, color: Colors.grey)),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isWebWide = constraints.maxWidth > 900;
+                    final banner = ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.network(
+                        'https://cdnv2.tgdd.vn/mwg-static/common/News/1573973/Thumb.jpg',
+                        height: isSmallScreen ? 120 : (isWebWide ? 260 : 150),
+                        width: isWebWide ? constraints.maxWidth : double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: isSmallScreen ? 120 : (isWebWide ? 260 : 150),
+                          color: Colors.grey.shade200,
+                          child: const Center(child: Icon(Icons.image, size: 48, color: Colors.grey)),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                    if (isWebWide) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: banner,
+                      );
+                    } else {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : (isMediumScreen ? 24 : 48)),
+                        child: banner,
+                      );
+                    }
+                  },
                 ),
                 SizedBox(height: isSmallScreen ? 20 : 24),
                 // Categories section 
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : (isMediumScreen ? 24 : 48)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Danh mục sản phẩm',
                         style: TextStyle(
-                          fontSize: isSmallScreen ? 16 : 18,
+                          fontSize: isSmallScreen ? 14 : (isMediumScreen ? 16 : 18),
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -373,71 +386,91 @@ class _HomePageState extends State<HomePage> {
                 // Deals section 
                 Container(
                   color: const Color(0xFFF5F5F5),
-                  padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 12 : 16),
+                  padding: EdgeInsets.symmetric(vertical: isLargeScreen ? 24 : (isSmallScreen ? 12 : 16)),
                   child: Column(
                     children: [
                       SectionHeader(
                         title: 'Sản phẩm nổi bật',
                         showViewAll: true,
                         titleColor: Colors.black,
+                        fontSize: isLargeScreen ? 28 : (isMediumScreen ? 22 : 18),
+                        icon: Icons.star,
                       ),
                       // Product grid
                       GridView.count(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: isSmallScreen ? 2 : (isMediumScreen ? 3 : 4),
-                        childAspectRatio: isSmallScreen ? 0.65 : 0.68,
+                        crossAxisCount: isLargeScreen ? 5 : (isMediumScreen ? 3 : 2),
+                        childAspectRatio: isLargeScreen ? 0.8 : (isSmallScreen ? 0.65 : 0.68),
                         padding: EdgeInsets.symmetric(
-                          horizontal: isSmallScreen ? 8 : 12,
-                          vertical: isSmallScreen ? 8 : 12,
+                          horizontal: isLargeScreen ? 32 : (isMediumScreen ? 24 : 8),
+                          vertical: isLargeScreen ? 24 : (isSmallScreen ? 8 : 12),
                         ),
-                        mainAxisSpacing: isSmallScreen ? 8 : 12,
-                        crossAxisSpacing: isSmallScreen ? 8 : 12,
+                        mainAxisSpacing: isLargeScreen ? 24 : (isSmallScreen ? 8 : 12),
+                        crossAxisSpacing: isLargeScreen ? 24 : (isSmallScreen ? 8 : 12),
                         children: featuredProducts.map((product) {
-                          return ProductCard(
-                            product: product,
-                            showFavoriteButton: true,
-                            showPromotionTags: true,
+                          return MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              curve: Curves.easeInOut,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: ProductCard(
+                                product: product,
+                                showFavoriteButton: true,
+                                showPromotionTags: true,
+                              ),
+                            ),
                           );
                         }).toList(),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: isSmallScreen ? 20 : 24),
+                SizedBox(height: isLargeScreen ? 32 : (isSmallScreen ? 20 : 24)),
                 // Brands section
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 48 : (isMediumScreen ? 24 : 12)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Thương hiệu nổi bật',
                         style: TextStyle(
-                          fontSize: isSmallScreen ? 16 : 18,
+                          fontSize: isLargeScreen ? 24 : (isMediumScreen ? 18 : 16),
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          letterSpacing: 1.1,
                         ),
                       ),
-                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      SizedBox(height: isLargeScreen ? 18 : (isSmallScreen ? 12 : 16)),
                       Wrap(
-                        spacing: isSmallScreen ? 8 : 12,
-                        runSpacing: isSmallScreen ? 8 : 12,
+                        spacing: isLargeScreen ? 18 : (isSmallScreen ? 8 : 12),
+                        runSpacing: isLargeScreen ? 18 : (isSmallScreen ? 8 : 12),
                         alignment: WrapAlignment.spaceEvenly,
                         children: const [
-                          BrandItem(name: 'Apple', icon: Icons.apple),
-                          BrandItem(name: 'Samsung', icon: Icons.phone_android),
-                          BrandItem(name: 'Xiaomi', icon: Icons.devices),
-                          BrandItem(name: 'Dell', icon: Icons.laptop_mac),
+                          BrandItem(name: 'Apple', icon: Icons.apple, iconSize: 38),
+                          BrandItem(name: 'Samsung', icon: Icons.phone_android, iconSize: 38),
+                          BrandItem(name: 'Xiaomi', icon: Icons.devices, iconSize: 38),
+                          BrandItem(name: 'Dell', icon: Icons.laptop_mac, iconSize: 38),
                         ],
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: isSmallScreen ? 20 : 24),
+                SizedBox(height: isLargeScreen ? 32 : (isSmallScreen ? 20 : 24)),
                 // Promotion cards 
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 48 : (isMediumScreen ? 24 : 12)),
                   child: Card(
                     color: const Color(0xFF23272F),
                     elevation: 0,
@@ -452,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+                        padding: EdgeInsets.all(isLargeScreen ? 32 : (isSmallScreen ? 16 : 20)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -461,27 +494,28 @@ class _HomePageState extends State<HomePage> {
                                 Icon(
                                   Icons.local_offer,
                                   color: Colors.amber,
-                                  size: isSmallScreen ? 18 : 22,
+                                  size: isLargeScreen ? 28 : (isSmallScreen ? 18 : 22),
                                 ),
                                 Icon(
                                   Icons.local_offer,
                                   color: Colors.blue,
-                                  size: isSmallScreen ? 18 : 22,
+                                  size: isLargeScreen ? 28 : (isSmallScreen ? 18 : 22),
                                 ),
-                                SizedBox(width: isSmallScreen ? 6 : 8),
+                                SizedBox(width: isLargeScreen ? 12 : (isSmallScreen ? 6 : 8)),
                                 Text(
                                   'Ưu đãi đặc biệt',
                                   style: TextStyle(
-                                    fontSize: isSmallScreen ? 16 : 18,
+                                    fontSize: isLargeScreen ? 22 : (isSmallScreen ? 14 : 18),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
+                                    letterSpacing: 1.1,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            SizedBox(height: isLargeScreen ? 24 : (isSmallScreen ? 12 : 16)),
                             SizedBox(
-                              height: isSmallScreen ? 140 : 160,
+                              height: isLargeScreen ? 180 : (isSmallScreen ? 140 : 160),
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: [
@@ -492,7 +526,7 @@ class _HomePageState extends State<HomePage> {
                                     textColor: Colors.purple,
                                     icon: Icons.credit_card,
                                   ),
-                                  SizedBox(width: isSmallScreen ? 12 : 16),
+                                  SizedBox(width: isLargeScreen ? 24 : (isSmallScreen ? 12 : 16)),
                                   PromotionCard(
                                     title: 'Voucher 500K',
                                     subtitle: 'Cho đơn từ 5 triệu',
@@ -500,7 +534,7 @@ class _HomePageState extends State<HomePage> {
                                     textColor: Colors.orange,
                                     icon: Icons.card_giftcard,
                                   ),
-                                  SizedBox(width: isSmallScreen ? 12 : 16),
+                                  SizedBox(width: isLargeScreen ? 24 : (isSmallScreen ? 12 : 16)),
                                   PromotionCard(
                                     title: 'Freeship',
                                     subtitle: 'Toàn quốc',
@@ -517,7 +551,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: isSmallScreen ? 24 : 30),
+                SizedBox(height: isLargeScreen ? 40 : (isSmallScreen ? 24 : 30)),
               ],
             ),
           );

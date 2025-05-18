@@ -6,6 +6,7 @@ import 'package:tech_mart/data/repositories/auth_repository.dart';
 import 'package:tech_mart/models/auth/login_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -51,9 +52,8 @@ class _LoginPageState extends State<LoginPage> {
       await prefs.setString('token', response.token);
       await prefs.setStringList('roles', response.roles);
       ApiClient().updateHeaders(token: response.token);
-      // Lưu token vào flutter_secure_storage để các chức năng khác sử dụng
-      final storage = const FlutterSecureStorage();
-      await storage.write(key: 'accessToken', value: response.token);
+      // Lưu token đa nền tảng (web/mobile)
+      await TokenStorage.saveToken(response.token);
       
       // Hiển thị dialog thành công
       if (!mounted) return;
@@ -484,5 +484,29 @@ class _LoginPageState extends State<LoginPage> {
         },
       ),
     );
+  }
+}
+
+class TokenStorage {
+  static const _key = 'accessToken';
+
+  static Future<void> saveToken(String token) async {
+    if (kIsWeb) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_key, token);
+    } else {
+      const storage = FlutterSecureStorage();
+      await storage.write(key: _key, value: token);
+    }
+  }
+
+  static Future<String?> getToken() async {
+    if (kIsWeb) {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_key);
+    } else {
+      const storage = FlutterSecureStorage();
+      return await storage.read(key: _key);
+    }
   }
 }

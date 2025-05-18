@@ -3,51 +3,44 @@ import 'package:flutter/material.dart';
 class SectionHeader extends StatelessWidget {
   final String title;
   final bool showViewAll;
-  final VoidCallback? onViewAllPressed;
-  final Color titleColor;
+  final Color? titleColor;
+  final double? fontSize;
+  final IconData? icon;
+  final VoidCallback? onViewAll;
 
   const SectionHeader({
     Key? key,
     required this.title,
-    this.showViewAll = true,
-    this.onViewAllPressed,
-    this.titleColor = Colors.black,
+    this.showViewAll = false,
+    this.titleColor,
+    this.fontSize,
+    this.icon,
+    this.onViewAll,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: titleColor,
-            ),
-          ),
-          if (showViewAll)
-            TextButton(
-              onPressed: onViewAllPressed ?? () {},
-              child: Row(
-                children: [
-                  Text(
-                    'Xem thêm',
-                    style: TextStyle(color: Colors.blue.shade200),
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    size: 16,
-                    color: Colors.blue.shade200,
-                  ),
-                ],
-              ),
-            ),
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(icon, color: titleColor ?? Colors.black, size: fontSize != null ? fontSize! * 1.2 : 22),
+          const SizedBox(width: 8),
         ],
-      ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: fontSize ?? 18,
+            fontWeight: FontWeight.bold,
+            color: titleColor ?? Colors.black,
+          ),
+        ),
+        const Spacer(),
+        if (showViewAll)
+          TextButton(
+            onPressed: onViewAll,
+            child: const Text('Xem tất cả'),
+          ),
+      ],
     );
   }
 }
