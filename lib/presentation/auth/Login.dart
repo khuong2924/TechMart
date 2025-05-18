@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/presentation/home/HomePage.dart';
+import 'package:tech_mart/core/network/api_client.dart';
+import 'package:tech_mart/data/repositories/auth_repository.dart';
+import 'package:tech_mart/models/auth/login_response.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -9,27 +13,42 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
   String? _errorMessage;
+  bool _isLoading = false;
+
+  late final AuthRepository _authRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _authRepository = AuthRepository(ApiClient());
+  }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _handleLogin() {
-    // Clear previous error message
+  Future<void> _handleLogin() async {
     setState(() {
       _errorMessage = null;
+      _isLoading = true;
     });
-
-    // Check if login credentials match
-    if (_emailController.text == 'admin' && _passwordController.text == '123456') {
-      // Show customized success modal
+    try {
+      final LoginResponse response = await _authRepository.login(
+        _usernameController.text.trim(),
+        _passwordController.text.trim(),
+      );
+      // Lưu token vào SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response.token);
+      // Hiển thị dialog thành công
+      if (!mounted) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -87,7 +106,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  
                   // Content
                   Padding(
                     padding: const EdgeInsets.all(24.0),
@@ -102,9 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                               child: child,
                             );
                           },
-                          child: const Text(
-                            'Welcome back, Admin!',
-                            style: TextStyle(
+                          child: Text(
+                            'Welcome back, ${response.username}!',
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF2E7D32),
@@ -144,7 +162,6 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: GestureDetector(
                             onTap: () {
-                              // Close the dialog and navigate to home page
                               Navigator.of(context).pop();
                               Navigator.pushReplacement(
                                 context,
@@ -201,10 +218,13 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
       );
-    } else {
-      // Show error message (unchanged)
+    } catch (e) {
       setState(() {
-        _errorMessage = 'Invalid username or password';
+        _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -245,7 +265,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            
             // Login form - white background
             Container(
               width: double.infinity,
@@ -272,15 +291,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Please provide your Email ID to\nlogin/ sign up before you place the order',
+                      'Please provide your Username to\nlogin/ sign up before you place the order',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
                     ),
                     const SizedBox(height: 30),
-                    
-                    // Error message (if any)
                     if (_errorMessage != null)
                       Container(
                         padding: const EdgeInsets.all(10),
@@ -293,15 +310,16 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             const Icon(Icons.error_outline, color: Colors.red),
                             const SizedBox(width: 10),
-                            Text(
-                              _errorMessage!,
-                              style: const TextStyle(color: Colors.red),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    
-                    // Email field
+                    // Username field
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
@@ -309,8 +327,8 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: TextField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
+                        controller: _usernameController,
+                        keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
                           hintText: 'Username',
                           border: InputBorder.none,
@@ -318,7 +336,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
                     // Password field
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -348,40 +365,48 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    
                     // Sign In Button
                     InkWell(
-                      onTap: _handleLogin,
+                      onTap: _isLoading ? null : _handleLogin,
                       child: Container(
                         width: double.infinity,
                         height: 56,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: _isLoading ? Colors.grey : Colors.black,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              'SIGN IN',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                          children: [
+                            if (_isLoading)
+                              const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            else ...[
+                              const Text(
+                                'SIGN IN',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            ),
+                              const SizedBox(width: 8),
+                              const Icon(
+                                Icons.arrow_forward,
+                                color: Colors.white,
+                              ),
+                            ],
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    
-                    // Reset Password
                     Center(
                       child: TextButton(
                         onPressed: () {
@@ -397,18 +422,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
-                    // Divider
                     Container(
                       height: 1,
                       color: Colors.grey[300],
                     ),
                     const SizedBox(height: 24),
-                    
-                    // Create Account Button
                     InkWell(
                       onTap: () {
-                        // Navigate to register page with animation
                         Navigator.of(context).pushNamed('/register');
                       },
                       child: Container(
