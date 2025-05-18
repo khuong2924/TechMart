@@ -14,21 +14,39 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.width < 600;
+    final isMediumScreen = size.width >= 600 && size.width < 1200;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
       child: TextField(
         controller: controller,
         onTap: onTap,
+        style: TextStyle(
+          fontSize: isSmallScreen ? 14 : 16,
+        ),
         decoration: InputDecoration(
           hintText: hintText,
-          prefixIcon: const Icon(Icons.search),
+          hintStyle: TextStyle(
+            fontSize: isSmallScreen ? 14 : 16,
+            color: Colors.grey[600],
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            size: isSmallScreen ? 20 : 24,
+            color: Colors.grey[600],
+          ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(isSmallScreen ? 8 : 10),
             borderSide: BorderSide.none,
           ),
           filled: true,
           fillColor: Colors.grey.shade200,
-          contentPadding: const EdgeInsets.symmetric(vertical: 0),
+          contentPadding: EdgeInsets.symmetric(
+            vertical: isSmallScreen ? 12 : 14,
+            horizontal: isSmallScreen ? 12 : 16,
+          ),
         ),
       ),
     );

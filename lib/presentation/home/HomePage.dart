@@ -6,6 +6,7 @@ import 'package:tech_mart/presentation/cart/CartPage.dart';
 import 'package:tech_mart/data/repositories/category_repository.dart';
 import 'package:tech_mart/core/network/api_client.dart';
 import 'package:provider/provider.dart';
+import 'package:tech_mart/presentation/profile/ProfilePage.dart';
 
 import 'components/search_bar.dart';
 import 'components/product_card.dart';
@@ -70,6 +71,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.width < 600;
+    final isMediumScreen = size.width >= 600 && size.width < 1200;
+    final isLargeScreen = size.width >= 1200;
+
     // Tạo dữ liệu sản phẩm cho trang chủ sử dụng model Product
     final List<Product> featuredProducts = [
       Product(
@@ -210,19 +216,52 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Row(
-          children: const [
-            Icon(Icons.recycling, size: 30, color: Colors.white),
-            SizedBox(width: 8),
-            Text('Tech Mart', style: TextStyle(color: Colors.white)),
+          children: [
+            Icon(
+              Icons.recycling,
+              size: isSmallScreen ? 24 : 30,
+              color: Colors.white,
+            ),
+            SizedBox(width: isSmallScreen ? 6 : 8),
+            Text(
+              'Tech Mart',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: isSmallScreen ? 18 : 20,
+              ),
+            ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+              size: isSmallScreen ? 20 : 24,
+            ),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
+            icon: Icon(
+              Icons.person_outline,
+              color: Colors.white,
+              size: isSmallScreen ? 20 : 24,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart_outlined,
+              color: Colors.white,
+              size: isSmallScreen ? 20 : 24,
+            ),
             onPressed: () {
               Navigator.push(
                 context,
@@ -234,213 +273,237 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const CustomSearchBar(
-              hintText: 'Tìm kiếm sản phẩm...',
-            ),
-            const SizedBox(height: 24),
-            // Banner khuyến mãi 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  'https://cdnv2.tgdd.vn/mwg-static/common/News/1573973/Thumb.jpg',
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 150,
-                    color: Colors.grey.shade200,
-                    child: const Center(child: Icon(Icons.image, size: 48, color: Colors.grey)),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: isSmallScreen ? 16 : 20),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  child: const CustomSearchBar(
+                    hintText: 'Tìm kiếm sản phẩm...',
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Categories section 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Danh mục sản phẩm',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Banner khuyến mãi 
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.network(
+                      'https://cdnv2.tgdd.vn/mwg-static/common/News/1573973/Thumb.jpg',
+                      height: isSmallScreen ? 120 : 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: isSmallScreen ? 120 : 150,
+                        color: Colors.grey.shade200,
+                        child: const Center(child: Icon(Icons.image, size: 48, color: Colors.grey)),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: _categories.map((category) {
-                            return GestureDetector(
-                              onTap: () => _onCategoryTap(context, category.name),
-                              child: CategoryItem(
-                                icon: _getCategoryIcon(category.name),
-                                title: category.name,
+                ),
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Categories section 
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Danh mục sản phẩm',
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 16 : 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : Wrap(
+                              spacing: isSmallScreen ? 8 : 12,
+                              runSpacing: isSmallScreen ? 8 : 12,
+                              children: _categories.map((category) {
+                                return GestureDetector(
+                                  onTap: () => _onCategoryTap(context, category.name),
+                                  child: CategoryItem(
+                                    icon: _getCategoryIcon(category.name),
+                                    title: category.name,
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Flash sale section 
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 12 : 16),
+                  color: Colors.red.shade900.withOpacity(0.08),
+                  child: Column(
+                    children: [
+                      SectionHeader(
+                        title: 'FLASH SALE',
+                        showViewAll: true,
+                        titleColor: Colors.black,
+                      ),
+                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 8 : 12),
+                        child: Row(
+                          children: flashSaleProducts.map((product) {
+                            return Padding(
+                              padding: EdgeInsets.only(right: isSmallScreen ? 8 : 12),
+                              child: FlashSaleItem(
+                                product: product,
+                                soldPercent: product.reviews.toDouble(),
                               ),
                             );
                           }).toList(),
                         ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Flash sale section 
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              color: Colors.red.shade900.withOpacity(0.08),
-              child: Column(
-                children: [
-                  SectionHeader(
-                    title: 'FLASH SALE',
-                    showViewAll: true,
-                    titleColor: Colors.black,
-                  ),
-                  const SizedBox(height: 16),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      children: flashSaleProducts.map((product) {
-                        return FlashSaleItem(
-                          product: product,
-                          soldPercent: product.reviews.toDouble(),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Deals section 
-            Container(
-              color: const Color(0xFFF5F5F5),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                children: [
-                  SectionHeader(
-                    title: 'Sản phẩm nổi bật',
-                    showViewAll: true,
-                    titleColor: Colors.black,
-                  ),
-                  // Product grid - Việt hóa - sử dụng components
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.68, // make card taller to fit all content
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    children: featuredProducts.map((product) {
-                      return ProductCard(
-                        product: product,
-                        showFavoriteButton: true, 
-                        showPromotionTags: true,
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Thương hiệu nổi bật',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      BrandItem(name: 'Apple', icon: Icons.apple),
-                      BrandItem(name: 'Samsung', icon: Icons.phone_android),
-                      BrandItem(name: 'Xiaomi', icon: Icons.devices),
-                      BrandItem(name: 'Dell', icon: Icons.laptop_mac),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Promotion cards 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              child: Card(
-                color: const Color(0xFF23272F),
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(Icons.local_offer, color: Colors.amber, size: 22),
-                          Icon(Icons.local_offer, color: Colors.blue, size: 22),
-                          SizedBox(width: 8),
-                          Text(
-                            'Ưu đãi đặc biệt',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        height: 130,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            PromotionCard(
-                              title: 'Trả góp 0%',
-                              subtitle: 'Dành cho đơn trên 3 triệu',
-                              bgColor: Colors.purple.shade100,
-                              textColor: Colors.purple,
-                              icon: Icons.credit_card,
-                            ),
-                            const SizedBox(width: 16),
-                            PromotionCard(
-                              title: 'Voucher 500K',
-                              subtitle: 'Cho đơn từ 10 triệu',
-                              bgColor: Colors.orange.shade100,
-                              textColor: Colors.orange,
-                              icon: Icons.card_giftcard,
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Deals section 
+                Container(
+                  color: const Color(0xFFF5F5F5),
+                  padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 12 : 16),
+                  child: Column(
+                    children: [
+                      SectionHeader(
+                        title: 'Sản phẩm nổi bật',
+                        showViewAll: true,
+                        titleColor: Colors.black,
+                      ),
+                      // Product grid
+                      GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: isSmallScreen ? 2 : (isMediumScreen ? 3 : 4),
+                        childAspectRatio: isSmallScreen ? 0.65 : 0.68,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isSmallScreen ? 8 : 12,
+                          vertical: isSmallScreen ? 8 : 12,
+                        ),
+                        mainAxisSpacing: isSmallScreen ? 8 : 12,
+                        crossAxisSpacing: isSmallScreen ? 8 : 12,
+                        children: featuredProducts.map((product) {
+                          return ProductCard(
+                            product: product,
+                            showFavoriteButton: true,
+                            showPromotionTags: true,
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Brands section
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Thương hiệu nổi bật',
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 16 : 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      Wrap(
+                        spacing: isSmallScreen ? 8 : 12,
+                        runSpacing: isSmallScreen ? 8 : 12,
+                        alignment: WrapAlignment.spaceEvenly,
+                        children: const [
+                          BrandItem(name: 'Apple', icon: Icons.apple),
+                          BrandItem(name: 'Samsung', icon: Icons.phone_android),
+                          BrandItem(name: 'Xiaomi', icon: Icons.devices),
+                          BrandItem(name: 'Dell', icon: Icons.laptop_mac),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 20 : 24),
+                // Promotion cards 
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 12 : 16),
+                  child: Card(
+                    color: const Color(0xFF23272F),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.local_offer,
+                                color: Colors.amber,
+                                size: isSmallScreen ? 18 : 22,
+                              ),
+                              Icon(
+                                Icons.local_offer,
+                                color: Colors.blue,
+                                size: isSmallScreen ? 18 : 22,
+                              ),
+                              SizedBox(width: isSmallScreen ? 6 : 8),
+                              Text(
+                                'Ưu đãi đặc biệt',
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 16 : 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: isSmallScreen ? 12 : 16),
+                          SizedBox(
+                            height: isSmallScreen ? 110 : 130,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                PromotionCard(
+                                  title: 'Trả góp 0%',
+                                  subtitle: 'Dành cho đơn trên 3 triệu',
+                                  bgColor: Colors.purple.shade100,
+                                  textColor: Colors.purple,
+                                  icon: Icons.credit_card,
+                                ),
+                                SizedBox(width: isSmallScreen ? 12 : 16),
+                                PromotionCard(
+                                  title: 'Voucher 500K',
+                                  subtitle: 'Cho đơn từ 10 triệu',
+                                  bgColor: Colors.orange.shade100,
+                                  textColor: Colors.orange,
+                                  icon: Icons.card_giftcard,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 24 : 30),
+              ],
             ),
-            const SizedBox(height: 30),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
