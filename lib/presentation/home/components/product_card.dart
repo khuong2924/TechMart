@@ -31,17 +31,17 @@ class ProductCard extends StatelessWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xFF23272F), // dark gray background
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.15),
               spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -52,7 +52,7 @@ class ProductCard extends StatelessWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
@@ -60,23 +60,22 @@ class ProductCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.grey.shade100,
+                          color: Colors.grey.shade900,
                           child: Center(
-                            child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
+                            child: Icon(Icons.photo, size: 50, color: Colors.grey.shade700),
                           ),
                         );
                       },
                     ),
                   ),
                 ),
-
                 // Out of Stock overlay
                 if (!product.isAvailable)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       ),
                       child: const Center(
                         child: Text(
@@ -85,24 +84,24 @@ class ProductCard extends StatelessWidget {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
+                            fontSize: 18,
                           ),
                         ),
                       ),
                     ),
                   ),
-
                 // Discount tag
                 if (product.discountPercent != null)
                   Positioned(
                     top: 0,
-                    right: 0,
+                    left: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                       decoration: const BoxDecoration(
-                        color: Colors.red,
+                        color: Color(0xFFE53935),
                         borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          bottomLeft: Radius.circular(8),
+                          topLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(12),
                         ),
                       ),
                       child: Text(
@@ -110,92 +109,106 @@ class ProductCard extends StatelessWidget {
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: 13,
                         ),
                       ),
                     ),
                   ),
-
                 // Favorite button
                 if (showFavoriteButton)
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: IconButton(
-                      icon: const Icon(Icons.favorite_border, color: Colors.white),
-                      onPressed: () {
-                        // TODO: Implement favorite functionality
-                      },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black.withOpacity(0.4),
+                      radius: 16,
+                      child: IconButton(
+                        icon: const Icon(Icons.favorite_border, color: Colors.white, size: 16),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          // TODO: Implement favorite functionality
+                        },
+                      ),
                     ),
                   ),
               ],
             ),
-
             // Product details
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Price section
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        _formatCurrency(product.price),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.red,
-                        ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 13,
                       ),
-                      if (product.discountPercentage > 0) ...[
-                        const SizedBox(width: 8),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            _formatCurrency(product.price),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Color(0xFFFFC107),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (product.discountPercentage > 0) ...[
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              _formatCurrency(product.originalPrice),
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey.shade500,
+                                fontSize: 11,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 13, color: Colors.amber.shade400),
+                        const SizedBox(width: 2),
                         Text(
-                          _formatCurrency(product.originalPrice),
+                          product.rating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          "(${product.reviews})",
                           style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey.shade600,
-                            fontSize: 12,
+                            color: Colors.grey.shade400,
+                            fontSize: 10,
                           ),
                         ),
                       ],
-                    ],
-                  ),
-
-                  const SizedBox(height: 6),
-
-                  // Rating and shipping info
-                  Row(
-                    children: [
-                      Icon(Icons.star, size: 16, color: Colors.amber.shade700),
-                      const SizedBox(width: 2),
-                      Text(
-                        product.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "(${product.reviews})",
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
