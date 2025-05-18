@@ -21,6 +21,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final ProductRepository _productRepository = ProductRepository(ApiClient());
   Product? _product;
   bool _isLoading = true;
+  final List<String> colors = ['Đen', 'Trắng', 'Xanh', 'Hồng'];
+  final List<String> storages = ['128GB', '256GB', '512GB'];
+  String selectedColor = 'Đen';
+  String selectedStorage = '128GB';
 
   @override
   void initState() {
@@ -70,21 +74,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final product = _product!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF181A20),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF181A20),
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
+            icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -103,153 +107,231 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             // Product Image
             AspectRatio(
               aspectRatio: 1,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey.shade100,
-                    child: Center(
-                      child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
                     ),
-                  );
-                },
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
+                  ),
+                  child: Image.network(
+                    product.imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey.shade800,
+                        child: Center(
+                          child: Icon(Icons.photo, size: 60, color: Colors.grey.shade600),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
-
             Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Product Name
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade900,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Price Section
-                  Row(
-                    children: [
-                      Text(
-                        _formatCurrency(product.price),
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Product Name
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
                       ),
-                      if (product.discountPercentage > 0) ...[
-                        const SizedBox(width: 8),
+                    ),
+                    const SizedBox(height: 10),
+                    // Price Section
+                    Row(
+                      children: [
                         Text(
-                          _formatCurrency(product.originalPrice),
-                          style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey.shade600,
-                            fontSize: 16,
+                          _formatCurrency(product.price),
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            '-${product.discountPercent}',
+                        if (product.discountPercentage > 0) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            _formatCurrency(product.originalPrice),
                             style: TextStyle(
-                              color: Colors.red.shade700,
-                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey.shade500,
+                              fontSize: 16,
                             ),
                           ),
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Rating and Reviews
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber.shade700),
-                      const SizedBox(width: 4),
-                      Text(
-                        product.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '(${product.reviews} đánh giá)',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Description
-                  const Text(
-                    'Mô tả sản phẩm',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    product.description,
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Specifications
-                  const Text(
-                    'Thông số kỹ thuật',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ...product.specifications.entries.map(
-                    (entry) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 120,
-                            child: Text(
-                              entry.key,
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                              ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.shade900,
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                          ),
-                          Expanded(
                             child: Text(
-                              entry.value,
+                              '-${product.discountPercent}',
                               style: const TextStyle(
-                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ],
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    // Rating and Reviews
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber.shade400, size: 22),
+                        const SizedBox(width: 4),
+                        Text(
+                          product.rating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${product.reviews} đánh giá)',
+                          style: TextStyle(
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    // Description
+                    const Text(
+                      'Mô tả sản phẩm',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      product.description,
+                      style: TextStyle(
+                        color: Colors.grey.shade300,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    // Specifications
+                    const Text(
+                      'Thông số kỹ thuật',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...product.specifications.entries.map(
+                      (entry) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 120,
+                              child: Text(
+                                entry.key,
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                entry.value,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    // Lựa chọn biến thể
+                    const Text(
+                      'Chọn màu sắc',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 10,
+                      children: colors.map((color) => ChoiceChip(
+                        label: Text(color, style: TextStyle(color: selectedColor == color ? Colors.black : Colors.white)),
+                        selected: selectedColor == color,
+                        selectedColor: Colors.white,
+                        backgroundColor: Colors.grey.shade800,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedColor = color;
+                          });
+                        },
+                      )).toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Chọn dung lượng',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 10,
+                      children: storages.map((storage) => ChoiceChip(
+                        label: Text(storage, style: TextStyle(color: selectedStorage == storage ? Colors.black : Colors.white)),
+                        selected: selectedStorage == storage,
+                        selectedColor: Colors.white,
+                        backgroundColor: Colors.grey.shade800,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedStorage = storage;
+                          });
+                        },
+                      )).toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -258,10 +340,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.grey.shade900,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 2,
               offset: const Offset(0, -1),
@@ -271,18 +353,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: Row(
           children: [
             Expanded(
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: () {
                   // TODO: Implement add to cart functionality
                 },
+                icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 4,
+                  backgroundColor: Colors.black,
+                  shadowColor: Colors.white24,
+                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  foregroundColor: Colors.white,
                 ),
-                child: const Text(
-                  'Thêm vào giỏ hàng',
+                label: const Text(
+                  'Thêm vào giỏ',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -290,18 +380,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: () {
                   // TODO: Implement buy now functionality
                 },
+                icon: const Icon(Icons.flash_on, color: Colors.white),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 4,
+                  backgroundColor: Colors.grey.shade800,
+                  shadowColor: Colors.orangeAccent,
+                  textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  foregroundColor: Colors.white,
                 ),
-                child: const Text(
+                label: const Text(
                   'Mua ngay',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
