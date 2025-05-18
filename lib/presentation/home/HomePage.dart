@@ -442,59 +442,77 @@ class _HomePageState extends State<HomePage> {
                     color: const Color(0xFF23272F),
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.local_offer,
-                                color: Colors.amber,
-                                size: isSmallScreen ? 18 : 22,
-                              ),
-                              Icon(
-                                Icons.local_offer,
-                                color: Colors.blue,
-                                size: isSmallScreen ? 18 : 22,
-                              ),
-                              SizedBox(width: isSmallScreen ? 6 : 8),
-                              Text(
-                                'Ưu đãi đặc biệt',
-                                style: TextStyle(
-                                  fontSize: isSmallScreen ? 16 : 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: isSmallScreen ? 12 : 16),
-                          SizedBox(
-                            height: isSmallScreen ? 110 : 130,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF23272F), Color(0xFF2C3140)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                PromotionCard(
-                                  title: 'Trả góp 0%',
-                                  subtitle: 'Dành cho đơn trên 3 triệu',
-                                  bgColor: Colors.purple.shade100,
-                                  textColor: Colors.purple,
-                                  icon: Icons.credit_card,
+                                Icon(
+                                  Icons.local_offer,
+                                  color: Colors.amber,
+                                  size: isSmallScreen ? 18 : 22,
                                 ),
-                                SizedBox(width: isSmallScreen ? 12 : 16),
-                                PromotionCard(
-                                  title: 'Voucher 500K',
-                                  subtitle: 'Cho đơn từ 10 triệu',
-                                  bgColor: Colors.orange.shade100,
-                                  textColor: Colors.orange,
-                                  icon: Icons.card_giftcard,
+                                Icon(
+                                  Icons.local_offer,
+                                  color: Colors.blue,
+                                  size: isSmallScreen ? 18 : 22,
+                                ),
+                                SizedBox(width: isSmallScreen ? 6 : 8),
+                                Text(
+                                  'Ưu đãi đặc biệt',
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 16 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            SizedBox(
+                              height: isSmallScreen ? 140 : 160,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  PromotionCard(
+                                    title: 'Trả góp 0%',
+                                    subtitle: 'Duyệt nhanh',
+                                    bgColor: Colors.purple.shade100,
+                                    textColor: Colors.purple,
+                                    icon: Icons.credit_card,
+                                  ),
+                                  SizedBox(width: isSmallScreen ? 12 : 16),
+                                  PromotionCard(
+                                    title: 'Voucher 500K',
+                                    subtitle: 'Cho đơn từ 5 triệu',
+                                    bgColor: Colors.orange.shade100,
+                                    textColor: Colors.orange,
+                                    icon: Icons.card_giftcard,
+                                  ),
+                                  SizedBox(width: isSmallScreen ? 12 : 16),
+                                  PromotionCard(
+                                    title: 'Freeship',
+                                    subtitle: 'Toàn quốc',
+                                    bgColor: Colors.blue.shade100,
+                                    textColor: Colors.blue,
+                                    icon: Icons.local_shipping,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

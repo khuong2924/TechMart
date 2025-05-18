@@ -8,19 +8,45 @@ class ProductRepository extends BaseRepository {
 
   ProductRepository(this._apiClient);
 
-  Future<Map<String, dynamic>> getProductsByCategory(int categoryId, {
+  Future<Map<String, dynamic>> searchProducts({
+    required String keyword,
     int page = 0,
     int size = 10,
   }) async {
     return handleApiCall(() async {
       final response = await _apiClient.get(
-        '${ApiConfig.products}/category/$categoryId',
+        '/api/products/search',
         queryParameters: {
-          'page': page,
-          'size': size,
+          'keyword': keyword,
+          'page': page.toString(),
+          'size': size.toString(),
         },
       );
       return response.data;
+    });
+  }
+
+  Future<Map<String, dynamic>> getProductsByCategory({
+    required int categoryId,
+    int page = 0,
+    int size = 10,
+  }) async {
+    return handleApiCall(() async {
+      final response = await _apiClient.get(
+        '/api/products/category/$categoryId',
+        queryParameters: {
+          'page': page.toString(),
+          'size': size.toString(),
+        },
+      );
+      return response.data;
+    });
+  }
+
+  Future<List<String>> getBrandsByCategory(int categoryId) async {
+    return handleApiCall(() async {
+      final response = await _apiClient.get('/api/products/category/$categoryId/brands');
+      return List<String>.from(response.data);
     });
   }
 

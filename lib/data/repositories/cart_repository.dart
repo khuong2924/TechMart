@@ -46,8 +46,7 @@ class CartRepository {
 
   Future<Cart> applyDiscount(String code) async {
     final response = await _apiClient.post(
-      '/api/cart/apply-discount',
-      data: {'code': code},
+      '/api/cart/apply-discount?code=$code',
     );
     return Cart.fromJson(response.data);
   }

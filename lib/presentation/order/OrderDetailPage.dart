@@ -29,6 +29,57 @@ class OrderDetailPage extends StatelessWidget {
     }
   }
 
+  Widget _buildInfoRow(String label, String value, bool isSmallScreen) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: isSmallScreen ? 14 : 16,
+              color: Colors.grey.shade400,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: isSmallScreen ? 14 : 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSection(String title, List<Widget> children, bool isSmallScreen) {
+    return Container(
+      padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade900,
+        borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: isSmallScreen ? 16 : 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: isSmallScreen ? 12 : 16),
+          ...children,
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -58,210 +109,110 @@ class OrderDetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Order Status
-              Container(
-                padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Order Status',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 16 : 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: isSmallScreen ? 12 : 16),
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isSmallScreen ? 12 : 16,
-                            vertical: isSmallScreen ? 6 : 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(int.parse('0xFF${_getStatusColor(order.status)}')),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            order.status,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+              _buildSection(
+                'Order Status',
+                [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isSmallScreen ? 12 : 16,
+                          vertical: isSmallScreen ? 6 : 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(int.parse('0xFF${_getStatusColor(order.status)}')),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          order.status,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: isSmallScreen ? 12 : 16),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isSmallScreen ? 12 : 16,
-                            vertical: isSmallScreen ? 6 : 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(int.parse('0xFF${_getStatusColor(order.paymentStatus)}')),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            order.paymentStatus,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      ),
+                      SizedBox(width: isSmallScreen ? 12 : 16),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isSmallScreen ? 12 : 16,
+                          vertical: isSmallScreen ? 6 : 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(int.parse('0xFF${_getStatusColor(order.paymentStatus)}')),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          order.paymentStatus,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
+                isSmallScreen,
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
-              // Order Summary
-              Container(
-                padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Order Summary',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 16 : 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+
+              // Order Items
+              _buildSection(
+                'Order Items',
+                [
+                  Text(
+                    order.orderSummary,
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 14 : 16,
+                      color: Colors.grey.shade400,
                     ),
-                    SizedBox(height: isSmallScreen ? 12 : 16),
-                    Text(
-                      order.orderSummary,
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 14 : 16,
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
-                    SizedBox(height: isSmallScreen ? 8 : 12),
-                    Text(
-                      'Items: ${order.itemCount}',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 14 : 16,
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: isSmallScreen ? 8 : 12),
+                  _buildInfoRow('Total Items', '${order.itemCount} items', isSmallScreen),
+                ],
+                isSmallScreen,
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
+
               // Payment Details
-              Container(
-                padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Payment Details',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 16 : 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: isSmallScreen ? 12 : 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Payment Method',
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.grey.shade400,
-                          ),
-                        ),
-                        Text(
-                          order.paymentMethod,
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: isSmallScreen ? 8 : 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total Amount',
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.grey.shade400,
-                          ),
-                        ),
-                        Text(
-                          _formatCurrency(order.finalAmount),
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              _buildSection(
+                'Payment Details',
+                [
+                  _buildInfoRow('Payment Method', order.paymentMethod, isSmallScreen),
+                  SizedBox(height: isSmallScreen ? 8 : 12),
+                  _buildInfoRow('Total Amount', _formatCurrency(order.finalAmount), isSmallScreen),
+                ],
+                isSmallScreen,
               ),
               SizedBox(height: isSmallScreen ? 20 : 24),
-              // Order Date
-              Container(
-                padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Order Information',
-                      style: TextStyle(
-                        fontSize: isSmallScreen ? 16 : 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: isSmallScreen ? 12 : 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Order Date',
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.grey.shade400,
-                          ),
-                        ),
-                        Text(
-                          DateFormat('dd/MM/yyyy HH:mm').format(order.orderDate),
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+
+              // Order Information
+              _buildSection(
+                'Order Information',
+                [
+                  _buildInfoRow(
+                    'Order Date',
+                    DateFormat('dd/MM/yyyy HH:mm').format(order.orderDate),
+                    isSmallScreen,
+                  ),
+                  SizedBox(height: isSmallScreen ? 8 : 12),
+                  _buildInfoRow('Order ID', '#${order.id}', isSmallScreen),
+                ],
+                isSmallScreen,
+              ),
+              SizedBox(height: isSmallScreen ? 20 : 24),
+
+              // Delivery Information
+              _buildSection(
+                'Delivery Information',
+                [
+                  _buildInfoRow('Shipping Address', '123 Main Street, City', isSmallScreen),
+                  SizedBox(height: isSmallScreen ? 8 : 12),
+                  _buildInfoRow('Recipient Name', 'John Doe', isSmallScreen),
+                  SizedBox(height: isSmallScreen ? 8 : 12),
+                  _buildInfoRow('Phone Number', '+84 123 456 789', isSmallScreen),
+                ],
+                isSmallScreen,
               ),
             ],
           ),

@@ -15,4 +15,19 @@ class UserRepository {
     final response = await _apiClient.put('/api/users/profile', data: data);
     return UserProfile.fromJson(response.data);
   }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    await _apiClient.post(
+      '/auth/change-password',
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      },
+    );
+  }
 } 
