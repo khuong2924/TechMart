@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/presentation/home/HomePage.dart';
+import 'package:tech_mart/presentation/admin/admin_dashboard.dart';
 import 'package:tech_mart/core/network/api_client.dart';
 import 'package:tech_mart/data/repositories/auth_repository.dart';
 import 'package:tech_mart/models/auth/login_response.dart';
@@ -47,6 +48,8 @@ class _LoginPageState extends State<LoginPage> {
       // Lưu token vào SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.token);
+      await prefs.setStringList('roles', response.roles);
+      
       // Hiển thị dialog thành công
       if (!mounted) return;
       showDialog(
@@ -163,10 +166,18 @@ class _LoginPageState extends State<LoginPage> {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const HomePage()),
-                              );
+                              // Check if user has admin role
+                              if (response.roles.contains('ROLE_ADMIN')) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const AdminDashboard()),
+                                );
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const HomePage()),
+                                );
+                              }
                             },
                             child: Container(
                               width: double.infinity,
