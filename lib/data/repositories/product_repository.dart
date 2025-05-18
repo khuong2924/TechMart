@@ -2,6 +2,8 @@ import 'package:tech_mart/core/network/api_client.dart';
 import 'package:tech_mart/core/repository/base_repository.dart';
 import 'package:tech_mart/core/config/api_config.dart';
 import 'package:tech_mart/models/product.dart';
+import 'package:tech_mart/models/review.dart';
+import 'package:dio/dio.dart';
 
 class ProductRepository extends BaseRepository {
   final ApiClient _apiClient;
@@ -55,5 +57,32 @@ class ProductRepository extends BaseRepository {
       final response = await _apiClient.get('${ApiConfig.products}/$productId');
       return Product.fromJson(response.data);
     });
+  }
+
+  Future<List<Review>> getProductReviews(int productId) async {
+    final response = await _apiClient.get('/api/products/$productId/reviews');
+    final data = response.data['content'] as List;
+    return data.map((json) => Review.fromJson(json)).toList();
+  }
+
+  Future<Review> postProductReview({
+    required int productId,
+    required int rating,
+    required String comment,
+    required String token,
+  }) async {
+    final response = await _apiClient.post(
+      '/api/products/$productId/reviews',
+      data: {
+        'rating': rating,
+        'comment': comment,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+    return Review.fromJson(response.data);
   }
 } 

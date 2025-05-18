@@ -5,6 +5,7 @@ import 'package:tech_mart/core/network/api_client.dart';
 import 'package:tech_mart/data/repositories/auth_repository.dart';
 import 'package:tech_mart/models/auth/login_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -50,6 +51,9 @@ class _LoginPageState extends State<LoginPage> {
       await prefs.setString('token', response.token);
       await prefs.setStringList('roles', response.roles);
       ApiClient().updateHeaders(token: response.token);
+      // Lưu token vào flutter_secure_storage để các chức năng khác sử dụng
+      final storage = const FlutterSecureStorage();
+      await storage.write(key: 'accessToken', value: response.token);
       
       // Hiển thị dialog thành công
       if (!mounted) return;
