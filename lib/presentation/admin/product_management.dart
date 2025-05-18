@@ -15,6 +15,7 @@ class _ProductManagementState extends State<ProductManagement> {
       'price': 59990000,
       'category': 'Laptop',
       'status': 'Còn hàng',
+      'discount': 10,
     },
     {
       'id': 2,
@@ -22,6 +23,7 @@ class _ProductManagementState extends State<ProductManagement> {
       'price': 34990000,
       'category': 'Điện thoại',
       'status': 'Còn hàng',
+      'discount': 5,
     },
     {
       'id': 3,
@@ -29,6 +31,7 @@ class _ProductManagementState extends State<ProductManagement> {
       'price': 28990000,
       'category': 'Tablet',
       'status': 'Hết hàng',
+      'discount': 0,
     },
     {
       'id': 4,
@@ -36,6 +39,7 @@ class _ProductManagementState extends State<ProductManagement> {
       'price': 19990000,
       'category': 'Đồng hồ',
       'status': 'Còn hàng',
+      'discount': 7,
     },
     {
       'id': 5,
@@ -43,6 +47,7 @@ class _ProductManagementState extends State<ProductManagement> {
       'price': 4990000,
       'category': 'Phụ kiện',
       'status': 'Còn hàng',
+      'discount': 0,
     },
   ];
 
@@ -83,6 +88,7 @@ class _ProductManagementState extends State<ProductManagement> {
     final isEdit = product != null;
     final nameController = TextEditingController(text: product?['name'] ?? '');
     final priceController = TextEditingController(text: product?['price']?.toString() ?? '');
+    final discountController = TextEditingController(text: product?['discount']?.toString() ?? '0');
     String category = product?['category'] ?? 'Laptop';
     String status = product?['status'] ?? 'Còn hàng';
 
@@ -111,6 +117,18 @@ class _ProductManagementState extends State<ProductManagement> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Giá (VNĐ)',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: discountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Chiết khấu (%)',
                   labelStyle: TextStyle(color: Colors.white70),
                   enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
                   focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
@@ -169,6 +187,7 @@ class _ProductManagementState extends State<ProductManagement> {
                 'price': int.tryParse(priceController.text) ?? 0,
                 'category': category,
                 'status': status,
+                'discount': int.tryParse(discountController.text) ?? 0,
               };
               setState(() {
                 if (isEdit && index != null) {
@@ -332,6 +351,7 @@ class _ProductManagementState extends State<ProductManagement> {
                 final price = product['price'] ?? 0;
                 final category = product['category'] ?? '';
                 final status = product['status'] ?? 'Còn hàng';
+                final discount = product['discount'] ?? 0;
                 return Container(
                   decoration: BoxDecoration(
                     color: const Color(0xFF232323),
@@ -350,7 +370,23 @@ class _ProductManagementState extends State<ProductManagement> {
                       backgroundColor: _categoryColor(category),
                       child: Icon(_categoryIcon(category), color: Colors.white),
                     ),
-                    title: Text(name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        ),
+                        if (discount > 0)
+                          Container(
+                            margin: const EdgeInsets.only(left: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.red[400],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text('-$discount%', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                          ),
+                      ],
+                    ),
                     subtitle: Text(
                       '${formatCurrency(price)} • $category • ' +
                         (status == 'Còn hàng'
