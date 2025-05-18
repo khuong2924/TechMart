@@ -1,11 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tech_mart/providers/cart_provider.dart';
+import 'package:tech_mart/providers/order_provider.dart';
+import 'package:tech_mart/data/repositories/cart_repository.dart';
+import 'package:tech_mart/data/repositories/order_repository.dart';
+import 'package:tech_mart/core/network/api_client.dart';
 import 'package:tech_mart/presentation/auth/Starter.dart';
 import 'package:tech_mart/presentation/auth/Login.dart';
 import 'package:tech_mart/presentation/home/HomePage.dart';
 import 'package:tech_mart/presentation/cart/CartPage.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+  ApiClient().updateHeaders(token: token);
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => CartProvider(CartRepository(ApiClient())),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => OrderProvider(OrderRepository(ApiClient())),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

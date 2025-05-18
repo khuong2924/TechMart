@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tech_mart/models/product.dart';
+import 'package:tech_mart/providers/cart_provider.dart';
 import 'package:tech_mart/data/repositories/product_repository.dart';
 import 'package:tech_mart/core/network/api_client.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +27,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final List<String> storages = ['128GB', '256GB', '512GB'];
   String selectedColor = 'Đen';
   String selectedStorage = '128GB';
+  int _quantity = 1;
+  bool _isAddingToCart = false;
 
   @override
   void initState() {
@@ -50,6 +54,41 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   String _formatCurrency(double amount) {
     final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
     return formatter.format(amount);
+  }
+
+  Future<void> _addToCart() async {
+    setState(() {
+      _isAddingToCart = true;
+    });
+
+    try {
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      await cartProvider.addToCart(widget.productId, _quantity);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đã thêm vào giỏ hàng'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAddingToCart = false;
+        });
+      }
+    }
   }
 
   @override
@@ -354,9 +393,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {
-                  // TODO: Implement add to cart functionality
-                },
+                onPressed: _isAddingToCart ? null : _addToCart,
                 icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 18),
@@ -369,13 +406,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   textStyle: const TextStyle(fontWeight: FontWeight.bold),
                   foregroundColor: Colors.white,
                 ),
-                label: const Text(
-                  'Thêm vào giỏ',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                label: _isAddingToCart
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Text(
+                        'Thêm vào giỏ',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(width: 16),

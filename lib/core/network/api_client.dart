@@ -3,9 +3,14 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:tech_mart/core/config/api_config.dart';
 
 class ApiClient {
+  static final ApiClient _instance = ApiClient._internal();
   late final Dio _dio;
   
-  ApiClient() {
+  factory ApiClient() {
+    return _instance;
+  }
+  
+  ApiClient._internal() {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiConfig.baseUrl,

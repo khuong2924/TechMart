@@ -5,6 +5,7 @@ import 'package:tech_mart/models/category.dart';
 import 'package:tech_mart/presentation/cart/CartPage.dart';
 import 'package:tech_mart/data/repositories/category_repository.dart';
 import 'package:tech_mart/core/network/api_client.dart';
+import 'package:provider/provider.dart';
 
 import 'components/search_bar.dart';
 import 'components/product_card.dart';

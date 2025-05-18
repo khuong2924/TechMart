@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.token);
       await prefs.setStringList('roles', response.roles);
+      ApiClient().updateHeaders(token: response.token);
       
       // Hiển thị dialog thành công
       if (!mounted) return;
