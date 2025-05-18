@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tech_mart/providers/cart_provider.dart';
 import 'package:tech_mart/providers/order_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:tech_mart/presentation/home/HomePage.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({Key? key}) : super(key: key);
@@ -50,14 +51,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
         final cartProvider = Provider.of<CartProvider>(context, listen: false);
         await cartProvider.clearCart();
 
-        // Show success message and navigate back
+        // Show success message and navigate to HomePage
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Đặt hàng thành công!'),
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false,
+        );
       }
     } catch (e) {
       if (mounted) {
