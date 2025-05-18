@@ -8,33 +8,199 @@ class OrderManagement extends StatefulWidget {
 }
 
 class _OrderManagementState extends State<OrderManagement> {
-  List<Map<String, dynamic>> orders = []; // TODO: Replace with actual order data
-  bool isLoading = false;
-  String selectedStatus = 'All';
+  List<Map<String, dynamic>> orders = [
+    {
+      'id': 1001,
+      'date': '2024-06-10',
+      'status': 'Pending',
+      'customer': 'Nguyễn Văn A',
+      'total': 59990000,
+      'items': [
+        {'name': 'MacBook Pro 16"', 'qty': 1, 'price': 59990000},
+      ],
+      'address': '123 Lê Lợi, Q.1, TP.HCM',
+      'phone': '0901234567',
+    },
+    {
+      'id': 1002,
+      'date': '2024-06-11',
+      'status': 'Processing',
+      'customer': 'Trần Thị B',
+      'total': 34990000,
+      'items': [
+        {'name': 'iPhone 15 Pro Max', 'qty': 1, 'price': 34990000},
+      ],
+      'address': '456 Nguyễn Trãi, Q.5, TP.HCM',
+      'phone': '0912345678',
+    },
+    {
+      'id': 1003,
+      'date': '2024-06-12',
+      'status': 'Shipped',
+      'customer': 'Lê Văn C',
+      'total': 28990000,
+      'items': [
+        {'name': 'iPad Pro 12.9"', 'qty': 1, 'price': 28990000},
+      ],
+      'address': '789 Cách Mạng Tháng 8, Q.10, TP.HCM',
+      'phone': '0923456789',
+    },
+    {
+      'id': 1004,
+      'date': '2024-06-13',
+      'status': 'Delivered',
+      'customer': 'Phạm Thị D',
+      'total': 4990000,
+      'items': [
+        {'name': 'AirPods Pro 2', 'qty': 1, 'price': 4990000},
+      ],
+      'address': '321 Lý Thường Kiệt, Q.Tân Bình, TP.HCM',
+      'phone': '0934567890',
+    },
+  ];
 
   final List<String> statuses = [
-    'All',
     'Pending',
     'Processing',
     'Shipped',
     'Delivered',
-    'Cancelled'
+    'Cancelled',
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadOrders();
+  String formatCurrency(int price) {
+    return price.toString().replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (match) => '.',
+    ) + ' ₫';
   }
 
-  Future<void> _loadOrders() async {
-    setState(() {
-      isLoading = true;
-    });
-    // TODO: Implement order loading from API
-    setState(() {
-      isLoading = false;
-    });
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'Pending':
+        return Colors.orange;
+      case 'Processing':
+        return Colors.blue;
+      case 'Shipped':
+        return Colors.purple;
+      case 'Delivered':
+        return Colors.green;
+      case 'Cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  void _showOrderDetailDialog(Map<String, dynamic> order, int index) {
+    String status = order['status'];
+    bool changed = false;
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setStateDialog) => AlertDialog(
+          backgroundColor: const Color(0xFF232323),
+          title: Row(
+            children: [
+              const Icon(Icons.receipt_long, color: Colors.blue),
+              const SizedBox(width: 8),
+              Text('Đơn hàng #${order['id']}', style: const TextStyle(color: Colors.white)),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: _statusColor(status),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Khách hàng: ${order['customer']}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 6),
+                Text('SĐT: ${order['phone']}', style: TextStyle(color: Colors.grey[300])),
+                const SizedBox(height: 6),
+                Text('Địa chỉ: ${order['address']}', style: TextStyle(color: Colors.grey[300])),
+                const SizedBox(height: 12),
+                const Text('Sản phẩm:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                ...List.generate(order['items'].length, (i) {
+                  final item = order['items'][i];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text('${item['name']}', style: const TextStyle(color: Colors.white))),
+                        Text('x${item['qty']}', style: TextStyle(color: Colors.grey[400])),
+                        const SizedBox(width: 8),
+                        Text(formatCurrency(item['price']), style: const TextStyle(color: Colors.greenAccent)),
+                      ],
+                    ),
+                  );
+                }),
+                const Divider(color: Colors.white24, height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Tổng cộng:', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text(formatCurrency(order['total']), style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey[900],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: DropdownButtonFormField<String>(
+                    value: status,
+                    dropdownColor: const Color(0xFF232323),
+                    decoration: const InputDecoration(
+                      labelText: 'Trạng thái đơn hàng',
+                      labelStyle: TextStyle(color: Colors.white70),
+                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.blue)),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    items: statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setStateDialog(() {
+                          status = value;
+                          changed = true;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng', style: TextStyle(color: Colors.white70)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: changed
+                  ? () {
+                      setState(() {
+                        orders[index]['status'] = status;
+                      });
+                      Navigator.pop(context);
+                    }
+                  : null,
+              child: const Text('Lưu'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -43,159 +209,63 @@ class _OrderManagementState extends State<OrderManagement> {
       backgroundColor: const Color(0xFF1E1E1E),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2D2D2D),
-        title: const Text(
-          'Order Management',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text('Order Management', style: TextStyle(color: Colors.white)),
       ),
-      body: Column(
-        children: [
-          // Status Filter
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: const Color(0xFF2D2D2D),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: statuses.map((status) {
-                  final isSelected = status == selectedStatus;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: Text(
-                        status,
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.grey[400],
-                        ),
-                      ),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        if (selected) {
-                          setState(() {
-                            selectedStatus = status;
-                          });
-                          // TODO: Filter orders by status
-                        }
-                      },
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      selectedColor: Theme.of(context).primaryColor,
+      body: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: orders.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          final order = orders[index];
+          return Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF232323),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.blue.withOpacity(0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: _statusColor(order['status']),
+                child: const Icon(Icons.receipt_long, color: Colors.white),
+              ),
+              title: Row(
+                children: [
+                  Expanded(
+                    child: Text('Đơn hàng #${order['id']}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _statusColor(order['status']),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                }).toList(),
+                    child: Text(order['status'], style: const TextStyle(color: Colors.white, fontSize: 12)),
+                  ),
+                ],
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Khách: ${order['customer']}', style: TextStyle(color: Colors.grey[300], fontSize: 13)),
+                  Text('Ngày: ${order['date']}', style: TextStyle(color: Colors.grey[400], fontSize: 12)),
+                  Text('Tổng: ${formatCurrency(order['total'])}', style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 13)),
+                ],
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () => _showOrderDetailDialog(order, index),
+                tooltip: 'Sửa trạng thái',
               ),
             ),
-          ),
-          // Orders List
-          Expanded(
-            child: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      return Card(
-                        color: const Color(0xFF2D2D2D),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: ExpansionTile(
-                          title: Text(
-                            'Order #${order['id']}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '${order['date']} - ${order['status']}',
-                            style: TextStyle(color: Colors.grey[400]),
-                          ),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildOrderDetail('Customer', order['customer']),
-                                  _buildOrderDetail('Total', '\$${order['total']}'),
-                                  _buildOrderDetail('Items', '${order['items']} items'),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextButton.icon(
-                                        onPressed: () => _viewOrderDetails(order),
-                                        icon: const Icon(Icons.visibility),
-                                        label: const Text('View Details'),
-                                      ),
-                                      DropdownButton<String>(
-                                        value: order['status'],
-                                        dropdownColor: const Color(0xFF2D2D2D),
-                                        style: const TextStyle(color: Colors.white),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                        items: statuses
-                                            .where((status) => status != 'All')
-                                            .map((status) {
-                                          return DropdownMenuItem(
-                                            value: status,
-                                            child: Text(status),
-                                          );
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          if (value != null) {
-                                            _updateOrderStatus(order, value);
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-          ),
-        ],
+          );
+        },
       ),
     );
-  }
-
-  Widget _buildOrderDetail(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey[400],
-              fontSize: 14,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _viewOrderDetails(Map<String, dynamic> order) {
-    // TODO: Implement order details view
-  }
-
-  void _updateOrderStatus(Map<String, dynamic> order, String newStatus) {
-    // TODO: Implement order status update
   }
 } 
