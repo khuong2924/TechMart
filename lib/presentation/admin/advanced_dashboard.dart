@@ -1,5 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class Category {
+  final int id;
+  final String name;
+  final String description;
+
+  Category({
+    required this.id,
+    required this.name,
+    required this.description,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+    );
+  }
+}
 
 class AdvancedDashboard extends StatefulWidget {
   const AdvancedDashboard({Key? key}) : super(key: key);
@@ -11,6 +33,8 @@ class AdvancedDashboard extends StatefulWidget {
 class _AdvancedDashboardState extends State<AdvancedDashboard> {
   bool isLoading = false;
   String selectedTimeRange = 'Last 7 Days';
+  List<Category> categories = [];
+  bool isCategoriesLoading = false;
 
   final List<String> timeRanges = [
     'Last 7 Days',
@@ -23,6 +47,31 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
   void initState() {
     super.initState();
     _loadData();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    setState(() {
+      isCategoriesLoading = true;
+    });
+    try {
+      final response = await http.get(Uri.parse('http://localhost:8080/api/categories'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          categories = data.map((json) => Category.fromJson(json)).toList();
+        });
+      } else {
+        // Handle error
+        print('Failed to load categories: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error loading categories: $e');
+    } finally {
+      setState(() {
+        isCategoriesLoading = false;
+      });
+    }
   }
 
   Future<void> _loadData() async {
@@ -485,33 +534,24 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
   }
 
   Widget _buildTopCategories({required bool isWide}) {
-    // Dữ liệu mẫu phù hợp hệ thống công nghệ
-    final categories = [
-      {
-        'name': 'Laptop',
-        'color': const Color(0xFF4CAF50),
-        'icon': Icons.laptop_mac,
-        'count': 150,
-      },
-      {
-        'name': 'Điện thoại',
-        'color': const Color(0xFF2196F3),
-        'icon': Icons.smartphone,
-        'count': 120,
-      },
-      {
-        'name': 'Tablet',
-        'color': const Color(0xFFFF9800),
-        'icon': Icons.tablet_mac,
-        'count': 90,
-      },
-      {
-        'name': 'Đồng hồ',
-        'color': const Color(0xFFE91E63),
-        'icon': Icons.watch,
-        'count': 70,
-      },
+    if (isCategoriesLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final categoryColors = [
+      const Color(0xFF4CAF50),
+      const Color(0xFF2196F3),
+      const Color(0xFFFF9800),
+      const Color(0xFFE91E63),
     ];
+
+    final categoryIcons = [
+      Icons.smartphone,
+      Icons.laptop_mac,
+      Icons.headphones,
+      Icons.watch,
+    ];
+
     final isMobile = !isWide;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -532,7 +572,7 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
           ),
           const SizedBox(height: 16),
           isMobile
-              ? _buildCategoryBarChart(categories)
+              ? _buildCategoryBarChart(categories, categoryColors, categoryIcons)
               : SizedBox(
                   height: 200,
                   child: Row(
@@ -543,13 +583,13 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
                           PieChartData(
                             sectionsSpace: 0,
                             centerSpaceRadius: 40,
-                            sections: categories.map((cat) {
-                              final count = cat['count'] as int;
-                              final total = categories.fold<int>(0, (a, b) => a + (b['count'] as int));
+                            sections: categories.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final category = entry.value;
                               return PieChartSectionData(
-                                color: cat['color'] as Color,
-                                value: count.toDouble(),
-                                title: '${(count * 100 ~/ total)}%',
+                                color: categoryColors[index % categoryColors.length],
+                                value: 1, // Equal distribution for now
+                                title: '${(100 ~/ categories.length)}%',
                                 radius: 45,
                                 titleStyle: const TextStyle(
                                   color: Colors.white,
@@ -564,24 +604,26 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
                       const SizedBox(width: 16),
                       Expanded(
                         flex: 3,
-                        child: _buildCategoryLegend(categories, isWide: true),
+                        child: _buildCategoryLegend(categories, categoryColors, categoryIcons, isWide: true),
                       ),
                     ],
                   ),
                 ),
           if (isMobile) ...[
             const SizedBox(height: 16),
-            _buildCategoryLegend(categories, isWide: false),
+            _buildCategoryLegend(categories, categoryColors, categoryIcons, isWide: false),
           ],
         ],
       ),
     );
   }
 
-  Widget _buildCategoryLegend(List categories, {required bool isWide}) {
+  Widget _buildCategoryLegend(List<Category> categories, List<Color> colors, List<IconData> icons, {required bool isWide}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: categories.map<Widget>((cat) {
+      children: categories.asMap().entries.map<Widget>((entry) {
+        final index = entry.key;
+        final category = entry.value;
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
@@ -590,21 +632,16 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
                 width: 16,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: cat['color'] as Color,
+                  color: colors[index % colors.length],
                   shape: BoxShape.circle,
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(cat['icon'] as IconData, color: cat['color'] as Color, size: 18),
+              Icon(icons[index % icons.length], color: colors[index % colors.length], size: 18),
               const SizedBox(width: 8),
               Text(
-                cat['name'] as String,
+                category.name,
                 style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${cat['count']} sản phẩm',
-                style: TextStyle(color: Colors.grey[400]),
               ),
             ],
           ),
@@ -613,13 +650,13 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
     );
   }
 
-  Widget _buildCategoryBarChart(List categories) {
+  Widget _buildCategoryBarChart(List<Category> categories, List<Color> colors, List<IconData> icons) {
     return SizedBox(
       height: 180,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
-          maxY: categories.map((c) => c['count'] as int).reduce((a, b) => a > b ? a : b).toDouble() + 10,
+          maxY: 100,
           barTouchData: BarTouchData(enabled: false),
           titlesData: FlTitlesData(
             show: true,
@@ -631,7 +668,7 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
                   if (idx < 0 || idx >= categories.length) return const SizedBox();
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Icon(categories[idx]['icon'] as IconData, color: categories[idx]['color'] as Color, size: 18),
+                    child: Icon(icons[idx % icons.length], color: colors[idx % colors.length], size: 18),
                   );
                 },
               ),
@@ -658,8 +695,8 @@ class _AdvancedDashboardState extends State<AdvancedDashboard> {
                 x: i,
                 barRods: [
                   BarChartRodData(
-                    toY: (categories[i]['count'] as int).toDouble(),
-                    color: categories[i]['color'] as Color,
+                    toY: 100 / categories.length, // Equal distribution for now
+                    color: colors[i % colors.length],
                     width: 24,
                     borderRadius: BorderRadius.circular(6),
                   ),

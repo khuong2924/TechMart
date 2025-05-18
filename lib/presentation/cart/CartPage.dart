@@ -14,28 +14,40 @@ class _CartPageState extends State<CartPage> {
   final List<CartItem> _cartItems = [
     CartItem(
       product: Product(
-        id: 'iphone15',
+        id: 1,
         name: 'iPhone 15',
-        image: 'assets/images/iphone15.jpg',
+        description: 'iPhone 15 mới nhất từ Apple',
         price: 19990000,
-        originalPrice: 22990000,
-        rating: 4.8,
-        reviews: 85,
-        colors: ['Đen', 'Trắng', 'Xanh'], specifications: null,
+        stockQuantity: 10,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 15,
+        averageRating: 4.8,
+        reviewCount: 85,
+        category: {'id': 1, 'name': 'Điện thoại'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       quantity: 1,
       color: 'Đen',
     ),
     CartItem(
       product: Product(
-        id: 'jbl-headset',
+        id: 2,
         name: 'JBL T450BT Extra Bass',
-        image: 'assets/images/jbl.jpg',
+        description: 'Tai nghe không dây với âm bass mạnh mẽ',
         price: 890000,
-        originalPrice: 1290000,
-        rating: 4.6,
-        reviews: 856,
-        colors: ['Đen'], specifications: null,
+        stockQuantity: 20,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 30,
+        averageRating: 4.6,
+        reviewCount: 856,
+        category: {'id': 2, 'name': 'Tai nghe'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       quantity: 2,
       color: 'Đen',
@@ -50,7 +62,7 @@ class _CartPageState extends State<CartPage> {
 
   // Tính tổng giá trị đơn hàng
   int get _totalAmount {
-    return _cartItems.fold(0, (total, item) => total + (item.product.price * item.quantity));
+    return _cartItems.fold(0, (total, item) => total + (item.product.price * item.quantity).toInt());
   }
 
   // Tính tổng số lượng sản phẩm
@@ -192,7 +204,7 @@ class _CartPageState extends State<CartPage> {
           itemBuilder: (context, index) {
             final item = _cartItems[index];
             return Dismissible(
-              key: Key(item.product.id),
+              key: Key(item.product.id.toString()),
               direction: DismissDirection.endToStart,
               background: Container(
                 color: Colors.red,
@@ -243,9 +255,17 @@ class _CartPageState extends State<CartPage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          item.product.image,
+                        child: Image.network(
+                          item.product.imageUrl,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey.shade100,
+                              child: Center(
+                                child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -286,7 +306,7 @@ class _CartPageState extends State<CartPage> {
                           Row(
                             children: [
                               Text(
-                                _formatCurrency(item.product.price),
+                                _formatCurrency(item.product.price.toInt()),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -297,7 +317,7 @@ class _CartPageState extends State<CartPage> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8),
                                   child: Text(
-                                    _formatCurrency(item.product.originalPrice!),
+                                    _formatCurrency(item.product.originalPrice.toInt()),
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
                                       fontSize: 14,

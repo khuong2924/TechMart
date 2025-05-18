@@ -6,10 +6,11 @@ class ApiConfig {
   // API Endpoints
   static const String login = '/auth/signin';
   static const String register = '/auth/register';
-  static const String products = '/products';
-  static const String categories = '/categories';
-  static const String cart = '/cart';
-  static const String orders = '/orders';
+  static const String products = '$baseUrl/api/products';
+  static const String categories = '$baseUrl/api/categories';
+  static const String cart = 'api/cart';
+  static const String orders = '$baseUrl/api/orders';
+  static const String users = '$baseUrl/users';
   
   // Headers
   static Map<String, String> getHeaders({String? token}) {

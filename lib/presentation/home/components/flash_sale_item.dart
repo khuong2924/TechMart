@@ -14,7 +14,7 @@ class FlashSaleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final discountPercent = product.discountPercentValue;
+    final discountPercent = product.discountPercent;
     
     return GestureDetector(
       onTap: () => _navigateToDetail(context),
@@ -44,11 +44,16 @@ class FlashSaleItem extends StatelessWidget {
                     height: 100,
                     width: double.infinity,
                     color: Colors.grey.shade100,
-                    child: Image.asset(
-                      product.image,
+                    child: Image.network(
+                      product.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return Center(child: Icon(Icons.image, size: 40, color: Colors.grey.shade400));
+                        return Container(
+                          color: Colors.grey.shade100,
+                          child: Center(
+                            child: Icon(Icons.photo, size: 50, color: Colors.grey.shade400),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -141,17 +146,7 @@ class FlashSaleItem extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => ProductDetailPage(
-          id: product.id,
-          name: product.name,
-          image: product.image,
-          price: product.price.toDouble(),
-          rating: product.rating,
-          reviews: product.reviews,
-          colors: product.colors,
-          specifications: product.specifications,
-          discountPrice: product.originalPrice?.toDouble(),
-          discountPercent: product.discountPercent,
-          isFreeShipping: product.isFreeShipping,
+          productId: product.id,
         ),
       ),
     );

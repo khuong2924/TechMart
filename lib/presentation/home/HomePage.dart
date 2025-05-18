@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tech_mart/models/product.dart' hide ProductSpecification;
 import 'package:tech_mart/models/product_specification.dart';
+import 'package:tech_mart/models/category.dart';
 import 'package:tech_mart/presentation/cart/CartPage.dart';
+import 'package:tech_mart/data/repositories/category_repository.dart';
+import 'package:tech_mart/core/network/api_client.dart';
 
 import 'components/search_bar.dart';
 import 'components/product_card.dart';
@@ -16,8 +19,38 @@ import 'package:tech_mart/presentation/product/ProductDetailPage.dart' ;
 
 import 'package:intl/intl.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final CategoryRepository _categoryRepository = CategoryRepository(ApiClient());
+  List<Category> _categories = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final categories = await _categoryRepository.getCategories();
+      setState(() {
+        _categories = categories;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // TODO: Handle error
+    }
+  }
 
   void _onCategoryTap(BuildContext context, String categoryName) {
     Navigator.push(
@@ -40,153 +73,135 @@ class HomePage extends StatelessWidget {
     // Tạo dữ liệu sản phẩm cho trang chủ sử dụng model Product
     final List<Product> featuredProducts = [
       Product(
-        id: 'macbook-pro',
+        id: 1,
         name: 'MacBook Pro M3',
-        image: 'assets/images/macbook16.jpg',
+        description: 'MacBook Pro với chip M3 mạnh mẽ',
         price: 49990000,
-        originalPrice: 52990000,
-        rating: 4.9,
-        reviews: 167,
-        colors: ['Xám không gian', 'Bạc'],
-        specifications: ProductSpecification(
-          processor: "Apple M3 Pro",
-          ram: "16 GB",
-          storage: "512 GB SSD",
-          display: "14.2 inch, Liquid Retina XDR",
-          graphics: "Apple M3 Pro 14-core GPU",
-          operatingSystem: "macOS Sonoma",
-        ),
+        stockQuantity: 10,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 5,
+        averageRating: 4.9,
+        reviewCount: 167,
+        category: {'id': 1, 'name': 'Laptop'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'jbl-headset',
+        id: 2,
         name: 'JBL T450BT Extra Bass',
-        image: 'assets/images/jbl.jpg',
+        description: 'Tai nghe không dây với âm bass mạnh mẽ',
         price: 890000,
-        originalPrice: 1290000,
-        rating: 4.6,
-        reviews: 856,
-        colors: ['Đen', 'Trắng', 'Xanh'],
-        specifications: ProductSpecification(
-          connectionType: "Bluetooth 4.0",
-          batteryLife: "11 giờ",
-          weight: "150g",
-          additionalSpecs: {
-            "Loại": "On-ear",
-            "Phạm vi kết nối": "10m",
-          },
-        ),
+        stockQuantity: 20,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 30,
+        averageRating: 4.6,
+        reviewCount: 856,
+        category: {'id': 2, 'name': 'Tai nghe'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'canon-90d',
+        id: 3,
         name: 'Canon EOS 90D DSLR',
-        image: 'assets/images/canon90d.jpg',
+        description: 'Máy ảnh DSLR chuyên nghiệp',
         price: 25990000,
-        originalPrice: 28990000,
-        rating: 4.7,
-        reviews: 253,
-        colors: ['Đen'],
-        specifications: ProductSpecification(
-          processor: "DIGIC 8",
-          display: "3.0\" LCD cảm ứng",
-          weight: "701g",
-          additionalSpecs: {
-            "Cảm biến": "APS-C CMOS 32.5MP",
-            "Quay video": "4K 30p",
-          },
-        ),
+        stockQuantity: 15,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 10,
+        averageRating: 4.7,
+        reviewCount: 253,
+        category: {'id': 3, 'name': 'Máy ảnh'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'galaxy-watch6',
+        id: 4,
         name: 'Samsung Galaxy Watch 6',
-        image: 'assets/images/galaxywatch6.jpg',
+        description: 'Đồng hồ thông minh cao cấp',
         price: 6490000,
-        originalPrice: 7990000,
-        rating: 4.5,
-        reviews: 389,
-        colors: ['Đen', 'Bạc', 'Vàng hồng'],
-        specifications: ProductSpecification(
-          processor: "Exynos W930",
-          ram: "2 GB",
-          storage: "16 GB",
-          display: "Super AMOLED",
-          battery: "425 mAh (40 giờ)",
-          size: "44mm",
-        ),
+        stockQuantity: 25,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 20,
+        averageRating: 4.5,
+        reviewCount: 389,
+        category: {'id': 4, 'name': 'Đồng hồ'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
     ];
 
     final List<Product> flashSaleProducts = [
       Product(
-        id: 's24-ultra',
+        id: 5,
         name: 'Samsung Galaxy S24',
-        image: 'assets/images/s24.jpg',
+        description: 'Điện thoại thông minh mới nhất từ Samsung',
         price: 22490000,
-        originalPrice: 25990000,
-        rating: 4.7,
-        reviews: 120,
-        colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: ProductSpecification(
-          processor: "Apple A16 Bionic",
-          ram: "6 GB",
-          storage: "128 GB",
-          display: "6.1 inch, Super Retina XDR",
-          camera: "48MP + 12MP",
-          frontCamera: "12MP",
-        ),
+        stockQuantity: 15,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 15,
+        averageRating: 4.7,
+        reviewCount: 120,
+        category: {'id': 1, 'name': 'Điện thoại'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'iphone15',
+        id: 6,
         name: 'iPhone 15',
-        image: 'assets/images/iphone15.jpg',
+        description: 'iPhone 15 mới nhất từ Apple',
         price: 19990000,
-        originalPrice: 22990000,
-        rating: 4.8,
-        reviews: 85,
-        colors: ['Đen', 'Trắng', 'Xanh'],
-        specifications: ProductSpecification(
-          processor: "Apple A16 Bionic",
-          ram: "6 GB",
-          storage: "128 GB",
-          display: "6.1 inch, Super Retina XDR",
-          camera: "48MP + 12MP",
-          frontCamera: "12MP",
-        ),
+        stockQuantity: 20,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 15,
+        averageRating: 4.8,
+        reviewCount: 85,
+        category: {'id': 1, 'name': 'Điện thoại'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'xiaomi14',
+        id: 7,
         name: 'Xiaomi 14',
-        image: 'assets/images/xiaomi14.jpg',
+        description: 'Điện thoại thông minh cao cấp từ Xiaomi',
         price: 16990000,
-        originalPrice: 19990000,
-        rating: 4.6,
-        reviews: 65,
-        colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: ProductSpecification(
-          processor: "Apple A16 Bionic",
-          ram: "6 GB",
-          storage: "128 GB",
-          display: "6.1 inch, Super Retina XDR",
-          camera: "48MP + 12MP",
-          frontCamera: "12MP",
-        ),
+        stockQuantity: 18,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 15,
+        averageRating: 4.6,
+        reviewCount: 65,
+        category: {'id': 1, 'name': 'Điện thoại'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
       Product(
-        id: 'findx7',
+        id: 8,
         name: 'OPPO Find X7',
-        image: 'assets/images/findx7.jpg',
+        description: 'Điện thoại thông minh cao cấp từ OPPO',
         price: 18490000,
-        originalPrice: 21990000,
-        rating: 4.5,
-        reviews: 50,
-        colors: ['Đen', 'Bạc', 'Xanh'],
-        specifications: ProductSpecification(
-          processor: "Apple A16 Bionic",
-          ram: "6 GB",
-          storage: "128 GB",
-          display: "6.1 inch, Super Retina XDR",
-          camera: "48MP + 12MP",
-          frontCamera: "12MP",
-        ),
+        stockQuantity: 12,
+        imageUrl: 'https://www.svgrepo.com/show/508699/landscape-placeholder.svg',
+        active: true,
+        discountPercentage: 15,
+        averageRating: 4.5,
+        reviewCount: 50,
+        category: {'id': 1, 'name': 'Điện thoại'},
+        variants: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       ),
     ];
 
@@ -254,17 +269,20 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(4, (index) {
-                      List<String> categories = ['Điện thoại', 'Laptop', 'Tai nghe', 'Đồng hồ'];
-                      List<IconData> icons = [Icons.smartphone, Icons.laptop, Icons.headphones, Icons.watch];
-                      return GestureDetector(
-                        onTap: () => _onCategoryTap(context, categories[index]),
-                        child: CategoryItem(icon: icons[index], title: categories[index]),
-                      );
-                    }),
-                  ),
+                  _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: _categories.map((category) {
+                            return GestureDetector(
+                              onTap: () => _onCategoryTap(context, category.name),
+                              child: CategoryItem(
+                                icon: _getCategoryIcon(category.name),
+                                title: category.name,
+                              ),
+                            );
+                          }).toList(),
+                        ),
                 ],
               ),
             ),
@@ -409,5 +427,20 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  IconData _getCategoryIcon(String categoryName) {
+    switch (categoryName.toLowerCase()) {
+      case 'điện thoại':
+        return Icons.smartphone;
+      case 'laptop':
+        return Icons.laptop;
+      case 'tai nghe':
+        return Icons.headphones;
+      case 'đồng hồ':
+        return Icons.watch;
+      default:
+        return Icons.category;
+    }
   }
 }
