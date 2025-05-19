@@ -30,4 +30,8 @@ class UserRepository {
       },
     );
   }
+
+  Future<void> logout() async {
+    await _apiClient.post('/auth/logout');
+  }
 } 

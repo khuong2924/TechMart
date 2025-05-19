@@ -10,6 +10,7 @@ import 'package:tech_mart/presentation/auth/Starter.dart';
 import 'package:tech_mart/presentation/auth/Login.dart';
 import 'package:tech_mart/presentation/home/HomePage.dart';
 import 'package:tech_mart/presentation/cart/CartPage.dart';
+import 'package:tech_mart/presentation/auth/Register.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
           case '/cart':
             return _createRoute(const CartPage(), settings);
           case '/register':
-            return _createRoute(const Placeholder(), settings);
+            return _createRoute(const RegisterPage(), settings);
           default:
             return _createRoute(const StarterPage(), settings);
         }

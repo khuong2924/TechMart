@@ -365,11 +365,56 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
+              SizedBox(height: isSmallScreen ? 16 : 20),
+              // Logout Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _logout,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 12 : 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(isSmallScreen ? 8 : 12),
+                    ),
+                  ),
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 16 : 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _logout() async {
+    try {
+      await _userRepository.logout();
+      if (mounted) {
+        // Navigate to login page and remove all previous routes
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/login',
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error logging out: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _showChangePasswordDialog() {
